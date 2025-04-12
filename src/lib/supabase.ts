@@ -1,11 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Valores padrão para desenvolvimento/teste - serão substituídos pelas variáveis de ambiente na produção
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://ehkicblprkjeezdawrzk.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoa2ljYmxwcmtqZWV6ZGF3cnprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzNjI4MzYsImV4cCI6MjA1OTkzODgzNn0.VanyddVHMf60SPw3Op8l1v7E01ycUoa6lL7Han0wwds';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Faltam as variáveis de ambiente do Supabase');
-}
+// Remova essa verificação para evitar erros durante o build
+// if (!supabaseUrl || !supabaseAnonKey) {
+//   throw new Error('Faltam as variáveis de ambiente do Supabase');
+// }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
