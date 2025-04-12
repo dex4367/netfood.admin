@@ -1,0 +1,22 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  NEXT_PLATFORM = "netlify"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Estas regras de redirecionamento garantem que as rotas dinâmicas do Next.js funcionem corretamente
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/nextjs-server"
+  status = 200
+  force = true
+
+[functions]
+  # Aumentar o timeout para funções serverless (opcional, só se necessário)
+  node_bundler = "esbuild"
+  external_node_modules = ["@netlify/functions"] 

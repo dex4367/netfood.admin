@@ -13,6 +13,20 @@ export default function ProdutoCard({ produto }: ProdutoCardProps) {
     currency: 'BRL',
   }).format(produto.preco);
 
+  // Formatar o preço original quando existir
+  const precoOriginalFormatado = produto.preco_original
+    ? new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      }).format(produto.preco_original)
+    : null;
+
+  // Calcular percentual de desconto
+  const temDesconto = produto.preco_original != null && produto.preco_original > produto.preco;
+  const percentualDesconto = temDesconto && produto.preco_original
+    ? Math.round(((produto.preco_original - produto.preco) / produto.preco_original) * 100)
+    : 0;
+
   return (
     <Link 
       href={`/produto/${produto.id}`}
@@ -44,7 +58,19 @@ export default function ProdutoCard({ produto }: ProdutoCardProps) {
           <p className="text-sm text-gray-600 mb-2 line-clamp-2">{produto.descricao}</p>
         )}
         <div className="mt-auto">
-          <p className="text-xl font-bold text-green-600">{precoFormatado}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-xl font-bold text-green-600">{precoFormatado}</p>
+            
+            {temDesconto && precoOriginalFormatado && (
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-gray-500 line-through">{precoOriginalFormatado}</p>
+                <span className="text-xs font-semibold text-white bg-green-600 px-2 py-0.5 rounded-full">
+                  -{percentualDesconto}%
+                </span>
+              </div>
+            )}
+          </div>
+          
           {!produto.disponivel && (
             <span className="text-xs text-red-500 mt-1 block">
               Produto indisponível
