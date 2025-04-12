@@ -1,15 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
-      { hostname: 'ehkicblprkjeezdawrzk.supabase.co' },
-      { hostname: 'encrypted-tbn0.gstatic.com' },
-      { hostname: 'images.unsplash.com' },
-      { hostname: 'img.freepik.com' },
-      { hostname: 'via.placeholder.com' },
-      { hostname: 'img.criativodahora.com.br' },
-      { hostname: 'storage.shopfood.io' }
-    ],
+    domains: ['ehkicblprkjeezdawrzk.supabase.co', 'encrypted-tbn0.gstatic.com', 'images.unsplash.com', 'img.freepik.com', 'via.placeholder.com', 'img.criativodahora.com.br', 'storage.shopfood.io'],
+    unoptimized: true // Desativa a otimização de imagens para permitir qualquer URL
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -58,182 +58,172 @@ export default async function ProdutoPage({ params }: PageProps) {
     ? Math.round(((produto.preco_original - produto.preco) / produto.preco_original) * 100)
     : 0;
   
+  const placeholderUrl = "https://via.placeholder.com/800x600?text=Produto";
+
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="mb-4">
-        <Link 
-          href={categoria ? `/categoria/${categoria.id}` : '/'}
-          className="text-green-600 hover:underline flex items-center gap-1"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Voltar para {categoria ? categoria.nome : 'o cardápio'}
-        </Link>
-      </div>
-      
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/2">
-            <div className="relative h-64 md:h-full min-h-[300px]">
-              {produto.imagem_url ? (
-                <Image
-                  src={produto.imagem_url}
-                  alt={produto.nome}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-              ) : (
-                <div className="flex items-center justify-center w-full h-full bg-gray-200">
-                  <span className="text-gray-400 text-lg">Sem imagem</span>
-                </div>
+    <div className="container mx-auto max-w-6xl px-4 py-8">
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Imagem do Produto */}
+        <div className="md:w-1/2">
+          <div className="relative h-64 md:h-full min-h-[300px]">
+            {produto.imagem_url ? (
+              <Image
+                src={produto.imagem_url}
+                alt={produto.nome}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+                unoptimized
+              />
+            ) : (
+              <div className="flex items-center justify-center w-full h-full bg-gray-200">
+                <span className="text-gray-400 text-lg">Sem imagem</span>
+              </div>
+            )}
+            {produto.destaque && (
+              <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full font-semibold">
+                Destaque
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="md:w-1/2 p-6 md:p-8">
+          <div className="flex flex-col h-full">
+            <div>
+              {categoria && (
+                <Link 
+                  href={`/categoria/${categoria.id}`}
+                  className="text-sm text-green-600 font-medium hover:underline"
+                >
+                  {categoria.nome}
+                </Link>
               )}
-              {produto.destaque && (
-                <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full font-semibold">
-                  Destaque
-                </div>
+              
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mt-2 mb-3">
+                {produto.nome}
+              </h1>
+              
+              {produto.descricao && (
+                <p className="text-gray-600 mb-6">
+                  {produto.descricao}
+                </p>
               )}
             </div>
-          </div>
-          
-          <div className="md:w-1/2 p-6 md:p-8">
-            <div className="flex flex-col h-full">
-              <div>
-                {categoria && (
-                  <Link 
-                    href={`/categoria/${categoria.id}`}
-                    className="text-sm text-green-600 font-medium hover:underline"
-                  >
-                    {categoria.nome}
-                  </Link>
-                )}
-                
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mt-2 mb-3">
-                  {produto.nome}
-                </h1>
-                
-                {produto.descricao && (
-                  <p className="text-gray-600 mb-6">
-                    {produto.descricao}
-                  </p>
-                )}
-              </div>
-              
-              <div className="mt-auto">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl font-bold text-green-600">
-                      {precoFormatado}
-                    </span>
-                    
-                    {temDesconto && precoOriginalFormatado && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg text-gray-500 line-through">
-                          {precoOriginalFormatado}
-                        </span>
-                        <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                          -{percentualDesconto}%
-                        </span>
-                      </div>
-                    )}
-                  </div>
+            
+            <div className="mt-auto">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-green-600">
+                    {precoFormatado}
+                  </span>
                   
-                  {!produto.disponivel && (
-                    <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium">
-                      Indisponível
-                    </span>
+                  {temDesconto && precoOriginalFormatado && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg text-gray-500 line-through">
+                        {precoOriginalFormatado}
+                      </span>
+                      <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        -{percentualDesconto}%
+                      </span>
+                    </div>
                   )}
                 </div>
                 
-                {gruposComplementos.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="font-medium text-gray-700 mb-2">Complementos Adicionais</h3>
-                    
-                    {gruposComplementos.map((grupo) => (
-                      <div key={grupo.id} className="mb-4 bg-gray-50 p-3 rounded-md">
-                        <div className="flex justify-between items-center mb-2">
-                          <h4 className="font-medium text-gray-800">{grupo.nome}</h4>
-                          {grupo.min_escolhas > 0 && (
-                            <span className="text-sm text-red-600">
-                              {grupo.min_escolhas === grupo.max_escolhas 
-                                ? `Escolha ${grupo.min_escolhas}`
-                                : `Escolha de ${grupo.min_escolhas} a ${grupo.max_escolhas}`}
-                            </span>
-                          )}
-                        </div>
-                        
-                        {grupo.descricao && (
-                          <p className="text-sm text-gray-600 mb-2">{grupo.descricao}</p>
+                {!produto.disponivel && (
+                  <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium">
+                    Indisponível
+                  </span>
+                )}
+              </div>
+              
+              {gruposComplementos.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="font-medium text-gray-700 mb-2">Complementos Adicionais</h3>
+                  
+                  {gruposComplementos.map((grupo) => (
+                    <div key={grupo.id} className="mb-4 bg-gray-50 p-3 rounded-md">
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className="font-medium text-gray-800">{grupo.nome}</h4>
+                        {grupo.min_escolhas > 0 && (
+                          <span className="text-sm text-red-600">
+                            {grupo.min_escolhas === grupo.max_escolhas 
+                              ? `Escolha ${grupo.min_escolhas}`
+                              : `Escolha de ${grupo.min_escolhas} a ${grupo.max_escolhas}`}
+                          </span>
                         )}
-                        
-                        <div className="space-y-2">
-                          {grupo.complementos?.map((complemento: Complemento) => (
-                            <div key={complemento.id} className="flex items-center justify-between border-b border-gray-100 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
-                              <div className="flex items-center">
-                                {grupo.max_escolhas === 1 ? (
-                                  <input
-                                    type="radio"
-                                    id={`complemento-${complemento.id}`}
-                                    name={`grupo-${grupo.id}`}
-                                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded-full"
+                      </div>
+                      
+                      {grupo.descricao && (
+                        <p className="text-sm text-gray-600 mb-2">{grupo.descricao}</p>
+                      )}
+                      
+                      <div className="space-y-2">
+                        {grupo.complementos?.map((complemento: Complemento) => (
+                          <div key={complemento.id} className="flex items-center justify-between border-b border-gray-100 pb-2 mb-2 last:border-0 last:pb-0 last:mb-0">
+                            <div className="flex items-center">
+                              {grupo.max_escolhas === 1 ? (
+                                <input
+                                  type="radio"
+                                  id={`complemento-${complemento.id}`}
+                                  name={`grupo-${grupo.id}`}
+                                  className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded-full"
+                                />
+                              ) : (
+                                <div className="flex items-center">
+                                  <BotoesQuantidade 
+                                    id={complemento.id}
+                                    maxQuantidade={grupo.max_escolhas}
                                   />
-                                ) : (
-                                  <div className="flex items-center">
-                                    <BotoesQuantidade 
-                                      id={complemento.id}
-                                      maxQuantidade={grupo.max_escolhas}
+                                </div>
+                              )}
+                              <div className="ml-2 flex items-center">
+                                {complemento.imagem_url && (
+                                  <div className="relative w-10 h-10 mr-2 rounded-full overflow-hidden">
+                                    <Image
+                                      src={complemento.imagem_url}
+                                      alt={complemento.nome}
+                                      fill
+                                      className="object-cover"
+                                      sizes="40px"
                                     />
                                   </div>
                                 )}
-                                <div className="ml-2 flex items-center">
-                                  {complemento.imagem_url && (
-                                    <div className="relative w-10 h-10 mr-2 rounded-full overflow-hidden">
-                                      <Image
-                                        src={complemento.imagem_url}
-                                        alt={complemento.nome}
-                                        fill
-                                        className="object-cover"
-                                        sizes="40px"
-                                      />
-                                    </div>
-                                  )}
-                                  <label 
-                                    htmlFor={`complemento-${complemento.id}`} 
-                                    className="text-sm text-gray-700"
-                                  >
-                                    {complemento.nome}
-                                  </label>
-                                </div>
+                                <label 
+                                  htmlFor={`complemento-${complemento.id}`} 
+                                  className="text-sm text-gray-700"
+                                >
+                                  {complemento.nome}
+                                </label>
                               </div>
-                              
-                              {complemento.preco > 0 && (
-                                <span className="text-sm font-medium text-gray-700">
-                                  + {new Intl.NumberFormat('pt-BR', {
-                                    style: 'currency',
-                                    currency: 'BRL',
-                                  }).format(complemento.preco)}
-                                </span>
-                              )}
                             </div>
-                          ))}
-                        </div>
+                            
+                            {complemento.preco > 0 && (
+                              <span className="text-sm font-medium text-gray-700">
+                                + {new Intl.NumberFormat('pt-BR', {
+                                  style: 'currency',
+                                  currency: 'BRL',
+                                }).format(complemento.preco)}
+                              </span>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-                
-                <button
-                  disabled={!produto.disponivel}
-                  className={`w-full py-3 rounded-lg font-medium text-white transition-colors
-                    ${produto.disponivel 
-                      ? 'bg-green-600 hover:bg-green-700' 
-                      : 'bg-gray-400 cursor-not-allowed'}`}
-                >
-                  {produto.disponivel ? 'Adicionar ao Pedido' : 'Produto Indisponível'}
-                </button>
-              </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              <button
+                disabled={!produto.disponivel}
+                className={`w-full py-3 rounded-lg font-medium text-white transition-colors
+                  ${produto.disponivel 
+                    ? 'bg-green-600 hover:bg-green-700' 
+                    : 'bg-gray-400 cursor-not-allowed'}`}
+              >
+                {produto.disponivel ? 'Adicionar ao Pedido' : 'Produto Indisponível'}
+              </button>
             </div>
           </div>
         </div>
