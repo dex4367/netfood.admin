@@ -2,7 +2,17 @@
 const nextConfig = {
   images: {
     domains: ['ehkicblprkjeezdawrzk.supabase.co', 'encrypted-tbn0.gstatic.com', 'images.unsplash.com', 'img.freepik.com', 'via.placeholder.com', 'img.criativodahora.com.br', 'storage.shopfood.io'],
-    unoptimized: true // Desativa a otimização de imagens para permitir qualquer URL
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+    unoptimized: true, // Desativa a otimização de imagens para permitir qualquer URL
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { type Produto } from '@/lib/supabase';
+import ImageWithFallback from './ImageWithFallback';
 
 interface ProdutoCardProps {
   produto: Produto;
@@ -34,13 +34,13 @@ export default function ProdutoCard({ produto }: ProdutoCardProps) {
     >
       <div className="relative w-full h-48">
         {produto.imagem_url ? (
-          <Image
+          <ImageWithFallback
             src={produto.imagem_url}
             alt={produto.nome}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
-            unoptimized
+            fallbackSrc="https://via.placeholder.com/400x300?text=Produto"
           />
         ) : (
           <div className="flex items-center justify-center w-full h-full bg-gray-200">

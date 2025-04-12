@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BotoesQuantidade from '@/components/BotoesQuantidade';
 import { Complemento } from '@/lib/supabase';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 // Forçar revalidação a cada 10 segundos
 export const revalidate = 10;
@@ -67,14 +68,14 @@ export default async function ProdutoPage({ params }: PageProps) {
         <div className="md:w-1/2">
           <div className="relative h-64 md:h-full min-h-[300px]">
             {produto.imagem_url ? (
-              <Image
+              <ImageWithFallback
                 src={produto.imagem_url}
                 alt={produto.nome}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
-                unoptimized
+                fallbackSrc="https://via.placeholder.com/800x600?text=Produto"
               />
             ) : (
               <div className="flex items-center justify-center w-full h-full bg-gray-200">
@@ -181,12 +182,13 @@ export default async function ProdutoPage({ params }: PageProps) {
                               <div className="ml-2 flex items-center">
                                 {complemento.imagem_url && (
                                   <div className="relative w-10 h-10 mr-2 rounded-full overflow-hidden">
-                                    <Image
+                                    <ImageWithFallback
                                       src={complemento.imagem_url}
                                       alt={complemento.nome}
                                       fill
                                       className="object-cover"
                                       sizes="40px"
+                                      fallbackSrc="https://via.placeholder.com/40x40?text=C"
                                     />
                                   </div>
                                 )}
@@ -244,12 +246,13 @@ export default async function ProdutoPage({ params }: PageProps) {
               >
                 <div className="relative h-40">
                   {prod.imagem_url ? (
-                    <Image
+                    <ImageWithFallback
                       src={prod.imagem_url}
                       alt={prod.nome}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 25vw"
+                      fallbackSrc="https://via.placeholder.com/400x300?text=Produto"
                     />
                   ) : (
                     <div className="flex items-center justify-center w-full h-full bg-gray-200">
