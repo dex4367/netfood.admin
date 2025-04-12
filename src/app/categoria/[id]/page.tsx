@@ -3,6 +3,9 @@ import ProdutoGrid from '@/components/ProdutoGrid';
 import { buscarCategorias, buscarProdutos } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 
+// Forçar revalidação a cada 10 segundos
+export const revalidate = 10;
+
 interface PageProps {
   params: {
     id: string;

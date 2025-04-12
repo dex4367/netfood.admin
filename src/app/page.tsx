@@ -6,6 +6,9 @@ import BannerCarouselWrapper from '@/components/BannerCarouselWrapper';
 import FeaturedProductsCarousel from '@/components/FeaturedProductsCarousel';
 import InfoLoja from '@/components/InfoLoja';
 
+// Forçar revalidação a cada 10 segundos
+export const revalidate = 10;
+
 export default async function Home() {
   // Carregar categorias e produtos
   const categorias = await buscarCategorias();

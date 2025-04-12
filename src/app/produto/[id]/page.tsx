@@ -5,6 +5,9 @@ import { notFound } from 'next/navigation';
 import BotoesQuantidade from '@/components/BotoesQuantidade';
 import { Complemento } from '@/lib/supabase';
 
+// Forçar revalidação a cada 10 segundos
+export const revalidate = 10;
+
 interface PageProps {
   params: {
     id: string;
