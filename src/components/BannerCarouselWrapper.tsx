@@ -1,34 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
+import { Banner } from '@/lib/supabase';
 
-// Importar o componente com lazy loading no lado do cliente
-const BannerCarousel = dynamic(() => import('@/components/BannerCarousel'), { ssr: false });
+// Dynamic import para o componente principal
+const BannerCarousel = dynamic(() => import('./BannerCarousel'), {
+  loading: () => <div className="h-[150px] bg-gray-200 animate-pulse rounded-lg" />,
+  ssr: false,
+});
 
-interface Banner {
-  id: string;
-  imageUrl: string;
-  linkUrl?: string;
+// Tipos para os banners formatados
+interface BannerFormatado extends Banner {
+  titulo?: string;
+  subtitulo?: string;
 }
 
+// Props do componente
 interface BannerCarouselWrapperProps {
-  banners: Banner[];
+  banners: BannerFormatado[];
   autoplayDelay?: number;
 }
 
+// Componente wrapper com carregamento lazy e fallback
 export default function BannerCarouselWrapper({ banners, autoplayDelay }: BannerCarouselWrapperProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Não renderizar nada durante o SSR
-  if (!isMounted) {
-    return <div className="banner-placeholder" style={{ height: '300px' }}></div>;
-  }
-
-  // Renderizar o carrossel apenas no cliente
   return <BannerCarousel banners={banners} autoplayDelay={autoplayDelay} />;
 } 

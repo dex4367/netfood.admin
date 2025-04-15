@@ -23,7 +23,7 @@ export default function ProdutoGrid({ produtos, titulo }: ProdutoGridProps) {
   return (
     <div className="w-full">
       {titulo && (
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">{titulo}</h2>
+        <h2 className="text-2xl font-bold text-red-600 mb-4">{titulo}</h2>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {produtos.map((produto) => (

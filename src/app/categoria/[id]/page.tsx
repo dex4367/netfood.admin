@@ -1,10 +1,7 @@
-import CategoriaList from '@/components/CategoriaList';
-import ProdutoGrid from '@/components/ProdutoGrid';
-import { buscarCategorias, buscarProdutos } from '@/lib/supabase';
-import { notFound } from 'next/navigation';
+'use client';
 
-// Forçar revalidação a cada 10 segundos
-export const revalidate = 10;
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface PageProps {
   params: {
@@ -12,54 +9,32 @@ interface PageProps {
   };
 }
 
-export default async function CategoriaPage({ params }: PageProps) {
+export default function CategoriaPage({ params }: PageProps) {
+  const router = useRouter();
   const categoriaId = params.id;
   
-  // Buscar todas as categorias para o menu
-  const categorias = await buscarCategorias();
-  
-  // Verificar se a categoria existe
-  const categoriaAtual = categorias.find(cat => cat.id === categoriaId);
-  if (!categoriaAtual) {
-    notFound();
-  }
-  
-  // Buscar produtos desta categoria
-  const produtos = await buscarProdutos(categoriaId);
+  useEffect(() => {
+    // Função para redirecionar de forma segura
+    const redirecionar = () => {
+      try {
+        // Redirecionar para a página principal com um parâmetro de categoria
+        router.push(`/?categoria=${categoriaId}`);
+      } catch (error) {
+        console.error('Erro ao redirecionar:', error);
+        // Em caso de erro, tentar novamente após um breve intervalo
+        setTimeout(redirecionar, 500);
+      }
+    };
+    
+    redirecionar();
+  }, [categoriaId, router]);
   
   return (
-    <div className="space-y-8">
-      <section>
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          {categoriaAtual.nome}
-        </h1>
-        {categoriaAtual.descricao && (
-          <p className="text-gray-600 mb-6">
-            {categoriaAtual.descricao}
-          </p>
-        )}
-        
-        <CategoriaList 
-          categorias={categorias} 
-          categoriaAtiva={categoriaId} 
-        />
-      </section>
-      
-      <section className="py-4">
-        <ProdutoGrid 
-          produtos={produtos} 
-          titulo={`Produtos em ${categoriaAtual.nome}`} 
-        />
-      </section>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Redirecionando...</p>
+      </div>
     </div>
   );
 }
-
-// Gerar páginas estáticas para todas as categorias
-export async function generateStaticParams() {
-  const categorias = await buscarCategorias();
-  
-  return categorias.map((categoria) => ({
-    id: categoria.id,
-  }));
-} 

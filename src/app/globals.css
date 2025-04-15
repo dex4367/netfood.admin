@@ -1,8 +1,11 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
 }
 
 @theme inline {
@@ -23,4 +26,159 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* Estilos para a barra de categorias */
+.categories-list-mobile {
+  background-color: white !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+  box-shadow: none;
+  position: relative;
+  z-index: 10;
+  transition: all 0.3s ease-in-out;
+  margin-top: 0;
+  padding-top: 0;
+  height: auto;
+  min-height: 30px;
+  width: 100%;
+}
+
+.categories-list-mobile.fixed {
+  position: fixed !important;
+  top: 106px !important; /* ajustado para grudar perfeitamente - cabeçalho mais fino */
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 40 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  border-top: none !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.3) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Tamanho de texto extra pequeno para descrições */
+.text-2xs {
+  font-size: 0.65rem;
+  line-height: 0.9rem;
+}
+
+/* Melhoria na legibilidade de textos em dispositivos móveis */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  /* Ajuste de botões para melhor toque em dispositivos móveis */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevenir zoom em inputs no iOS */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Linha indicadora para categorias ativas */
+.categories-list-mobile .active-indicator {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background-color: #ee4023;
+  z-index: 1;
+}
+
+.categoria-bar-container {
+  position: fixed;
+  top: 106px; /* Altura do header */
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: white;
+  min-height: 45px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Estilo para dispositivos móveis */
+@media (max-width: 640px) {
+  .categoria-bar-container {
+    top: 106px; /* Altura do header em mobile */
+  }
+}
+
+/* Barra de categoria fixa */
+.categoria-bar-fixed {
+  position: fixed;
+  top: 106px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  min-height: 30px;
+}
+
+/* Categorias - personalização */
+.categoria-item {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.categoria-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background-color: rgba(0,0,0,0.08);
+}
+
+.categoria-ativa {
+  font-weight: 700 !important;
+  transform: scale(1.05);
+}
+
+.categoria-ativa::before {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background-color: #f97316;
+  border-radius: 999px;
+  animation: expandWidth 0.3s ease forwards;
+}
+
+@keyframes expandWidth {
+  from { width: 0; left: 50%; right: 50%; }
+  to { width: 100%; left: 0; right: 0; }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-rgb: 255, 255, 255;
+  }
 }

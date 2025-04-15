@@ -1,114 +1,128 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import React, { useState, useCallback, useEffect } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Banner } from "@/lib/supabase";
 
-interface Banner {
-  id: string;
-  imageUrl: string;
-  linkUrl?: string;
+// Adicionar campos opcionais extras para o título e subtítulo
+interface BannerExtended extends Banner {
+  titulo?: string;
+  subtitulo?: string;
 }
 
 interface BannerCarouselProps {
-  banners: Banner[];
+  banners: BannerExtended[];
   autoplayDelay?: number;
 }
 
 export default function BannerCarousel({ banners, autoplayDelay = 5000 }: BannerCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: false });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true, 
+    dragFree: true,
+    skipSnaps: false,
+    containScroll: "keepSnaps",
+    align: "start"
+  });
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
-  const router = useRouter();
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setPrevBtnEnabled(emblaApi.canScrollPrev());
     setNextBtnEnabled(emblaApi.canScrollNext());
+    setActiveIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
   }, [emblaApi, onSelect]);
 
-  // Configurar autoplay
+  // Autoplay
   useEffect(() => {
-    if (!emblaApi || autoplayDelay === 0) return;
+    if (!emblaApi || banners.length <= 1) return;
     
-    const interval = setInterval(() => {
-      emblaApi.scrollNext();
-    }, autoplayDelay);
+    let intervalId: NodeJS.Timeout | null = null;
     
-    return () => clearInterval(interval);
-  }, [emblaApi, autoplayDelay]);
+    const startAutoplay = () => {
+      intervalId = setInterval(() => {
+        if (emblaApi.canScrollNext()) {
+          emblaApi.scrollNext();
+        } else {
+          emblaApi.scrollTo(0);
+        }
+      }, autoplayDelay);
+    };
+    
+    // Iniciar autoplay
+    startAutoplay();
+    
+    // Pausar autoplay quando o usuário interagir
+    const stopAutoplay = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+    
+    // Reiniciar autoplay após interação
+    const onPointerUp = () => {
+      stopAutoplay();
+      startAutoplay();
+    };
+    
+    emblaApi.on("pointerUp", onPointerUp);
+    
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      emblaApi.off("pointerUp", onPointerUp);
+    };
+  }, [emblaApi, autoplayDelay, banners.length]);
 
-  const handleBannerClick = (banner: Banner) => {
-    if (banner.linkUrl) {
-      router.push(banner.linkUrl);
-    }
-  };
+  if (banners.length === 0) {
+    return null;
+  }
 
-  if (!banners || banners.length === 0) return null;
+  // Duplicar os banners para criar efeito de repetição infinita se houver poucos
+  const displayBanners = banners.length < 5 
+    ? [...banners, ...banners, ...banners] 
+    : banners;
 
   return (
-    <div className="embla-banners relative overflow-hidden mb-8">
-      <div className="embla-banners-viewport" ref={emblaRef}>
-        <div className="embla-banners-container flex">
-          {banners.map((banner) => (
-            <div 
-              key={banner.id} 
-              className="embla-banner-slide relative flex-grow-0 flex-shrink-0 w-full min-w-0"
-              onClick={() => handleBannerClick(banner)}
+    <div className="relative overflow-hidden mx-auto my-2 pl-2.5">
+      <div className="embla overflow-hidden" ref={emblaRef}>
+        <div className="embla__container flex" style={{ paddingRight: '100px' }}>
+          {displayBanners.map((banner, index) => (
+            <div
+              className="embla__slide relative flex-[0_0_350px] h-[150px] min-w-0 ml-2.5"
+              key={`${banner.id}-${index}`}
             >
-              <div className="embla-banner-slide-inner relative cursor-pointer">
-                <div className="relative w-full h-64 md:h-80">
-                  <Image
-                    src={banner.imageUrl}
-                    alt="Banner promocional"
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 768px) 100vw, 1200px"
-                    priority
-                  />
+              <Image
+                src={banner.image_url}
+                alt={banner.titulo || "Banner promocional"}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="w-full h-full object-cover rounded-lg"
+              />
+              {banner.titulo && (
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+                  <h3 className="font-bold text-sm">{banner.titulo}</h3>
+                  {banner.subtitulo && <p className="text-xs">{banner.subtitulo}</p>}
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
       </div>
-      
-      <button
-        className="embla__button embla__button--prev absolute top-1/2 left-4 transform -translate-y-1/2 z-10 bg-white/70 rounded-full p-2 shadow hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-        onClick={scrollPrev}
-        disabled={!prevBtnEnabled}
-      >
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-      
-      <button
-        className="embla__button embla__button--next absolute top-1/2 right-4 transform -translate-y-1/2 z-10 bg-white/70 rounded-full p-2 shadow hover:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-        onClick={scrollNext}
-        disabled={!nextBtnEnabled}
-      >
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
     </div>
   );
 } 

@@ -1,0 +1,51 @@
+/* Override apenas para títulos de categoria */
+.category-title-wrapper h2 {
+  color: #ff7f00 !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  margin: 0 !important;
+}
+
+/* Garantir que textos de produtos mantenham sua cor original */
+.home-product-item-info-top h3,
+.home-product-item h3,
+h3.ng-binding {
+  color: #333 !important;
+}
+
+/* Apenas os títulos de categoria ficam laranja */
+.category-title-wrapper h2.ng-binding {
+  color: #ff7f00 !important;
+}
+
+/* Reset para outros elementos que possam ter sido afetados */
+.ng-binding:not(.category-title-wrapper h2) {
+  color: inherit;
+}
+
+/* Regras para outras ocorrências de vermelho */
+.text-red-500,
+.text-red-600,
+.text-red-700,
+.text-red-800,
+.text-red-900 {
+  color: #ff7f00 !important;
+}
+
+.bg-red-500,
+.bg-red-600,
+.bg-red-700,
+.bg-red-800,
+.bg-red-900 {
+  background-color: #ff7f00 !important;
+}
+
+/* Regras para inline styles com vermelho */
+*[style*="color:#e3000f"],
+*[style*="color: #e3000f"],
+*[style*="color:red"],
+*[style*="color: red"],
+*[style*="color:#ff0000"],
+*[style*="color: #ff0000"] {
+  color: #ff7f00 !important;
+} 

@@ -1,0 +1,4 @@
+/* /index.html 200
+/carrinho-novo /carrinho-novo/index.html 200
+/checkout-pix /checkout-pix/index.html 200
+/produto/* /produto/[id]/index.html 200 

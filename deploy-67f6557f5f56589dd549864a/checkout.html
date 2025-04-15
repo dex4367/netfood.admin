@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Checkout - Bob's</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .loader div {
+      animation: bounce 1s infinite;
+    }
+    .loader div:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    .loader div:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="max-w-md w-full text-center">
+    <!-- Logo -->
+    <div class="flex justify-center mb-8">
+      <img 
+        src="/images/bobs-logo.png"
+        width="120"
+        height="60"
+        alt="Logo Bob's"
+      />
+    </div>
+    
+    <!-- Título principal -->
+    <h1 class="text-3xl font-bold text-orange-500 mb-4">CHECKOUT EM BREVE</h1>
+    
+    <!-- Ícone de construção -->
+    <div class="flex justify-center mb-8">
+      <div class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Subtítulo -->
+    <p class="text-gray-600 mb-8">
+      Estamos trabalhando para implementar o checkout em breve. Aguarde nossas atualizações.
+    </p>
+    
+    <!-- Botão para voltar -->
+    <a 
+      href="/carrinho-novo" 
+      class="bg-orange-500 text-white font-medium py-3 px-8 rounded-md inline-block"
+    >
+      Voltar para o carrinho
+    </a>
+  </div>
+</body>
+</html> 

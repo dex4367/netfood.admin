@@ -45,7 +45,7 @@ export default function FeaturedProductsCarousel({ produtos }: FeaturedProductsC
 
   return (
     <div className="featured-wrapper">
-      <h2 className="text-2xl font-bold mb-6">Destaques</h2>
+      <h2 className="text-2xl font-bold text-red-600 mb-6">Destaques</h2>
       
       <div className="embla-featured-products relative overflow-hidden">
         <div className="embla-featured-products-viewport is-draggable" ref={emblaRef}>

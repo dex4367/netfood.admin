@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { supabase, buscarConfiguracaoLoja, atualizarConfiguracaoLoja, type ConfiguracaoLoja } from '@/lib/supabase';
+import { supabase, ConfiguracaoLoja } from '@/lib/supabase';
 
 export default function ConfiguracaoLojaPage() {
   const [configuracao, setConfiguracao] = useState<ConfiguracaoLoja>({
@@ -49,12 +49,28 @@ export default function ConfiguracaoLojaPage() {
   useEffect(() => {
     async function carregarConfiguracao() {
       setLoading(true);
-      const config = await buscarConfiguracaoLoja();
-      if (config) {
-        setConfiguracao(config);
-        if (config.logo_url) {
-          setLogoPreview(config.logo_url);
+      try {
+        // Modificando para buscar todos os registros e usar o primeiro
+        const { data, error } = await supabase
+          .from('configuracao_loja')
+          .select('*')
+          .limit(1); // Limita a um resultado
+
+        if (error) {
+          console.error('Erro ao buscar configuração da loja:', error);
+          setLoading(false);
+          return;
         }
+
+        // Se não existir configuração, usa a padrão (já definida no state)
+        if (data && data.length > 0) {
+          setConfiguracao(data[0]);
+          if (data[0].logo_url) {
+            setLogoPreview(data[0].logo_url);
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao buscar configuração da loja:', err);
       }
       setLoading(false);
     }
@@ -140,7 +156,77 @@ export default function ConfiguracaoLojaPage() {
     setErro(false);
     
     try {
-      const sucesso = await atualizarConfiguracaoLoja(configuracao);
+      // Verificar se já existe uma configuração
+      const { data, error: selectError } = await supabase
+        .from('configuracao_loja')
+        .select('id')
+        .limit(1);
+      
+      if (selectError && selectError.code !== '42P01') {
+        console.error('Erro ao verificar configuração existente:', selectError);
+        throw new Error('Erro ao verificar configuração existente');
+      }
+      
+      let sucesso = false;
+      
+      if (!data || data.length === 0) {
+        // Inserir nova configuração
+        const { error: insertError } = await supabase
+          .from('configuracao_loja')
+          .insert([{
+            id: '1', // ID fixo para a única configuração
+            nome_loja: configuracao.nome_loja,
+            descricao_loja: configuracao.descricao_loja,
+            logo_url: configuracao.logo_url,
+            cor_primaria: configuracao.cor_primaria,
+            cor_secundaria: configuracao.cor_secundaria,
+            
+            // Informações da loja
+            endereco: configuracao.endereco,
+            cnpj: configuracao.cnpj,
+            horario_funcionamento: configuracao.horario_funcionamento,
+            dias_funcionamento: configuracao.dias_funcionamento,
+            mostrar_endereco: configuracao.mostrar_endereco,
+            mostrar_cnpj: configuracao.mostrar_cnpj,
+            mostrar_horario: configuracao.mostrar_horario,
+            mostrar_dias: configuracao.mostrar_dias,
+            
+            // Opções de pagamento
+            pagamento_carteira: configuracao.pagamento_carteira,
+            pagamento_credito_mastercard: configuracao.pagamento_credito_mastercard,
+            pagamento_credito_visa: configuracao.pagamento_credito_visa,
+            pagamento_credito_elo: configuracao.pagamento_credito_elo,
+            pagamento_credito_amex: configuracao.pagamento_credito_amex,
+            pagamento_credito_hipercard: configuracao.pagamento_credito_hipercard,
+            pagamento_debito_mastercard: configuracao.pagamento_debito_mastercard,
+            pagamento_debito_visa: configuracao.pagamento_debito_visa,
+            pagamento_debito_elo: configuracao.pagamento_debito_elo,
+            pagamento_pix: configuracao.pagamento_pix,
+            pagamento_dinheiro: configuracao.pagamento_dinheiro,
+            
+            created_at: new Date().toISOString()
+          }]);
+        
+        if (insertError) {
+          console.error('Erro ao inserir configuração:', insertError);
+          throw new Error('Erro ao inserir configuração');
+        }
+        
+        sucesso = true;
+      } else {
+        // Atualizar configuração existente
+        const { error: updateError } = await supabase
+          .from('configuracao_loja')
+          .update(configuracao)
+          .eq('id', data[0].id);
+        
+        if (updateError) {
+          console.error('Erro ao atualizar configuração:', updateError);
+          throw new Error('Erro ao atualizar configuração');
+        }
+        
+        sucesso = true;
+      }
       
       if (sucesso) {
         setMensagem('Configurações salvas com sucesso!');

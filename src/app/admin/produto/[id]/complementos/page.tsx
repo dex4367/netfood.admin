@@ -7,9 +7,9 @@ import { supabase } from '@/lib/supabase';
 import type { Produto, GrupoComplemento } from '@/lib/supabase';
 import React from 'react';
 
-export default function ProdutoComplementosPage({ params }: { params: { id: string } }) {
+export default function ProdutoComplementosPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const produtoId = params.id;
+  const { id: produtoId } = React.use(params);
   
   const [produto, setProduto] = useState<Produto | null>(null);
   const [gruposDisponiveis, setGruposDisponiveis] = useState<GrupoComplemento[]>([]);

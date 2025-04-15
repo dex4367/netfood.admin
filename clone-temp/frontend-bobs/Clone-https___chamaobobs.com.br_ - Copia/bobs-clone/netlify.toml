@@ -1,0 +1,20 @@
+[images]
+  remote_images = ["https://ext.same-assets.com/*"]
+
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  NEXT_USE_NETLIFY_EDGE = "true"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+  NEXT_PUBLIC_SITE_URL = "https://chamaobobs.netlify.app"

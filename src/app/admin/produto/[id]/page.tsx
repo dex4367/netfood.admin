@@ -7,9 +7,9 @@ import { supabase } from '@/lib/supabase';
 import type { Produto, Categoria } from '@/lib/supabase';
 import React from 'react';
 
-export default function EditarProdutoPage({ params }: { params: { id: string } }) {
+export default function EditarProdutoPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
-  const produtoId = params.id;
+  const { id: produtoId } = React.use(params);
   const isNovoItem = produtoId === 'novo';
   
   const [categorias, setCategorias] = useState<Categoria[]>([]);
