@@ -144,7 +144,7 @@ const CategoriaListHorizontal: React.FC<Props> = ({
     <div className={`w-full bg-white min-h-[45px] ${className}`}>
       <div 
         ref={categoriaListRef}
-        className="overflow-x-auto hide-scrollbar pl-4" 
+        className="overflow-x-auto hide-scrollbar pl-1" 
         style={{ 
           msOverflowStyle: 'none',
           scrollbarWidth: 'none',
@@ -155,7 +155,7 @@ const CategoriaListHorizontal: React.FC<Props> = ({
         }}
       >
         {/* Espaçamento inicial */}
-        <div className="w-4 flex-shrink-0"></div>
+        <div className="w-1 flex-shrink-0"></div>
         
         {todasAsCategorias.map((categoria, index) => (
           <div 

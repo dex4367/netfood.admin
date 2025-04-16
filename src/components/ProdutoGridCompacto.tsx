@@ -21,7 +21,7 @@ export default function ProdutoGridCompacto({ produtos, titulo }: ProdutoGridCom
   }
 
   return (
-    <div className="w-full px-4">
+    <div className="w-full px-1">
       {titulo && <h2 className="text-xl font-semibold mb-4">{titulo}</h2>}
       
       {produtos.length === 0 ? (

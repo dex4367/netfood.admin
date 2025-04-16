@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Margem lateral global de 16px */
+/* Margem lateral global de 5px */
 .container, main, section, .main-content, 
 [class*="mx-auto"], [class*="px-"], 
 .App > div, .produto-grid, .produto-card,
@@ -11,8 +11,8 @@
 .categoria-list-horizontal, .search-bar,
 .info-loja, .banner-carousel, .destaque-grid,
 header > div, footer > div {
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 :root {
