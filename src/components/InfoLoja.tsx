@@ -64,7 +64,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
     <div className="mb-8 bg-white rounded-lg shadow-md overflow-hidden px-1">
       <button 
         onClick={() => setExpanded(!expanded)}
-        className="w-full p-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition"
+        className="w-full p-2 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition"
       >
         <h2 className="text-lg font-semibold text-gray-800 flex items-center">
           <FaInfoCircle className="h-5 w-5 mr-2 text-gray-600" />
@@ -76,11 +76,11 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
       </button>
       
       {expanded && (
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-2 border-t border-gray-200">
           {temInformacoes && (
-            <div className="mb-6">
-              <h3 className="font-medium text-gray-800 mb-3">Sobre a Loja</h3>
-              <div className="space-y-3">
+            <div className="mb-2">
+              <h3 className="font-medium text-gray-800 mb-2">Sobre a Loja</h3>
+              <div className="space-y-2">
                 {config.mostrar_endereco && config.endereco && (
                   <div className="flex items-start">
                     <FaMapMarkerAlt className="h-5 w-5 text-gray-500 mt-0.5 mr-2 flex-shrink-0" />
@@ -114,12 +114,12 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
           
           {temPagamentos && (
             <div className="merchant-details-payment">
-              <div className="mb-6">
-                <h3 className="font-medium text-gray-800 mb-4">Formas de Pagamento</h3>
+              <div className="mb-2">
+                <h3 className="font-medium text-gray-800 mb-2">Formas de Pagamento</h3>
                 
-                <div className="merchant-details-payment__payment mb-6">
+                <div className="merchant-details-payment__payment mb-2">
                   {/* Métodos de pagamento online */}
-                  <div className="mb-4">
+                  <div className="mb-2">
                     <p className="font-medium text-gray-700 mb-2">Pagamento pelo site</p>
                     
                     {/* Cartões de crédito */}
@@ -128,7 +128,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
                       config.pagamento_credito_elo || 
                       config.pagamento_credito_amex || 
                       config.pagamento_credito_hipercard) && (
-                      <div className="mb-4">
+                      <div className="mb-2">
                         <p className="text-sm font-medium text-gray-700 mb-2">Crédito</p>
                         <div className="flex flex-wrap gap-2">
                           {config.pagamento_credito_mastercard && (
@@ -169,7 +169,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
                     {(config.pagamento_debito_mastercard || 
                       config.pagamento_debito_visa || 
                       config.pagamento_debito_elo) && (
-                      <div className="mb-4">
+                      <div className="mb-2">
                         <p className="text-sm font-medium text-gray-700 mb-2">Débito</p>
                         <div className="flex flex-wrap gap-2">
                           {config.pagamento_debito_mastercard && (

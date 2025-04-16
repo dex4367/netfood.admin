@@ -11,13 +11,13 @@ export default function ProdutoCardCompacto({ produto }: ProdutoCardCompactoProp
     <Link href={`/produto/${produto.id}`} className="block">
       <div className="border-b border-gray-200/30 py-3 px-1">
         <div className="flex justify-between">
-          <div className="flex-1 pr-3">
+          <div className="flex-1 pr-2">
             <h3 className="text-base font-bold mb-0.5 text-[#505050]">{produto.nome}</h3>
             <p className="text-gray-600 text-xs mb-1">{produto.descricao}</p>
             
             <div>
               {produto.preco_original ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <span className="text-orange-500 font-bold text-sm">
                     R$ {produto.preco.toFixed(2).replace('.', ',')}
                   </span>

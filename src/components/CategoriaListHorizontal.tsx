@@ -160,7 +160,7 @@ const CategoriaListHorizontal: React.FC<Props> = ({
         {todasAsCategorias.map((categoria, index) => (
           <div 
             key={categoria.id} 
-            className={`flex-shrink-0 ${index === 0 ? 'pl-1' : 'px-4'}`} 
+            className={`flex-shrink-0 ${index === 0 ? 'pl-1' : 'px-2'}`} 
             style={{ display: 'inline-block' }}
           >
             <button

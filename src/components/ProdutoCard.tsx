@@ -56,19 +56,19 @@ export default function ProdutoCard({ produto }: ProdutoCardProps) {
           )}
         </div>
       </div>
-      <div className="flex flex-col p-4 flex-grow">
+      <div className="flex flex-col p-2 flex-grow">
         <h3 className="text-lg font-semibold text-[#505050] mb-1">{produto.nome}</h3>
         {produto.descricao && (
           <p className="text-sm text-gray-600 mb-2 line-clamp-2">{produto.descricao}</p>
         )}
         <div className="mt-auto">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <p className="text-xl font-bold text-orange-500">{precoFormatado}</p>
             
             {temDesconto && precoOriginalFormatado && (
               <>
                 <p className="text-sm text-gray-500 line-through">{precoOriginalFormatado}</p>
-                <span className="text-xs font-semibold text-white bg-orange-500 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-semibold text-white bg-orange-500 px-1 py-0.5 rounded-full">
                   -{percentualDesconto}%
                 </span>
               </>

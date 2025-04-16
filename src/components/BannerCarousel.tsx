@@ -114,7 +114,7 @@ export default function BannerCarousel({ banners, autoplayDelay = 5000 }: Banner
                 className="w-full h-full object-cover rounded-lg"
               />
               {banner.titulo && (
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-white">
                   <h3 className="font-bold text-sm">{banner.titulo}</h3>
                   {banner.subtitulo && <p className="text-xs">{banner.subtitulo}</p>}
                 </div>

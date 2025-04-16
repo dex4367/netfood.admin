@@ -149,7 +149,7 @@ export default function HeaderBobs({ categoriaAtiva, style }: HeaderBobsProps) {
   return (
     <div className="header-wrapper fixed top-0 left-0 right-0 z-50 w-full">
       <div className="w-full bg-white z-40 border-b border-gray-200/30" style={style}>
-        <div className="flex items-center justify-between py-1.5 px-3 mobile-nav">
+        <div className="flex items-center justify-between py-1.5 px-2 mobile-nav">
           <button aria-label="Menu" className="p-1.5">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
@@ -204,7 +204,7 @@ export default function HeaderBobs({ categoriaAtiva, style }: HeaderBobsProps) {
         </div>
         
         {/* Barra de pesquisa aprimorada */}
-        <div className="search-bar border-t border-gray-200/30 py-2 px-4">
+        <div className="search-bar border-t border-gray-200/30 py-2 px-2">
           <form onSubmit={handleSearch} className="relative flex items-center">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500">
               <svg 
@@ -276,7 +276,7 @@ export default function HeaderBobs({ categoriaAtiva, style }: HeaderBobsProps) {
                     <li key={index}>
                       <button
                         type="button"
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 flex items-center"
+                        className="w-full text-left px-2 py-2 text-sm text-gray-700 hover:bg-orange-50 flex items-center"
                         onClick={() => handleSelectRecentSearch(search)}
                       >
                         <svg 

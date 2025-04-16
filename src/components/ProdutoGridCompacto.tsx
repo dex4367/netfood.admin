@@ -22,12 +22,12 @@ export default function ProdutoGridCompacto({ produtos, titulo }: ProdutoGridCom
 
   return (
     <div className="w-full px-1">
-      {titulo && <h2 className="text-xl font-semibold mb-4">{titulo}</h2>}
+      {titulo && <h2 className="text-xl font-semibold mb-2">{titulo}</h2>}
       
       {produtos.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">Nenhum produto encontrado.</p>
+        <p className="text-gray-500 text-center py-2">Nenhum produto encontrado.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {produtos.map((produto) => (
             <ProdutoCardCompacto key={produto.id} produto={produto} />
           ))}
