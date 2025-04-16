@@ -61,7 +61,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
   }
   
   return (
-    <div className="mb-8 bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="mb-8 bg-white rounded-lg shadow-md overflow-hidden px-1">
       <button 
         onClick={() => setExpanded(!expanded)}
         className="w-full p-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition"

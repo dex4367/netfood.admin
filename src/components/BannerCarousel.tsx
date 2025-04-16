@@ -97,12 +97,12 @@ export default function BannerCarousel({ banners, autoplayDelay = 5000 }: Banner
     : banners;
 
   return (
-    <div className="relative overflow-hidden mx-auto my-2 pl-2.5">
+    <div className="relative overflow-hidden mx-auto my-2 pl-3.5">
       <div className="embla overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex" style={{ paddingRight: '100px' }}>
           {displayBanners.map((banner, index) => (
             <div
-              className="embla__slide relative flex-[0_0_350px] h-[150px] min-w-0 ml-2.5"
+              className="embla__slide relative flex-[0_0_350px] h-[150px] min-w-0 ml-3.5"
               key={`${banner.id}-${index}`}
             >
               <Image

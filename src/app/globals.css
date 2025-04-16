@@ -3,6 +3,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Margem lateral global extra de 1px */
+.container, main, section, .main-content, 
+[class*="mx-auto"], [class*="px-"], 
+.App > div, .produto-grid, .produto-card,
+.produto-card-compacto, .barra-categoria,
+.categoria-list-horizontal, .search-bar,
+.info-loja, .banner-carousel, .destaque-grid,
+header > div, footer > div {
+  padding-left: calc(var(--padding-left, 0px) + 1px);
+  padding-right: calc(var(--padding-right, 0px) + 1px);
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;

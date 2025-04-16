@@ -9,7 +9,7 @@ interface ProdutoCardCompactoProps {
 export default function ProdutoCardCompacto({ produto }: ProdutoCardCompactoProps) {
   return (
     <Link href={`/produto/${produto.id}`} className="block">
-      <div className="border-b border-gray-200/30 py-3">
+      <div className="border-b border-gray-200/30 py-3 px-1">
         <div className="flex justify-between">
           <div className="flex-1 pr-3">
             <h3 className="text-base font-bold mb-0.5 text-[#505050]">{produto.nome}</h3>

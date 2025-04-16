@@ -144,7 +144,7 @@ const CategoriaListHorizontal: React.FC<Props> = ({
     <div className={`w-full bg-white min-h-[45px] ${className}`}>
       <div 
         ref={categoriaListRef}
-        className="overflow-x-auto hide-scrollbar pl-2" 
+        className="overflow-x-auto hide-scrollbar pl-3" 
         style={{ 
           msOverflowStyle: 'none',
           scrollbarWidth: 'none',

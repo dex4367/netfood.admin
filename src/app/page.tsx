@@ -289,7 +289,7 @@ export default function Home() {
           )}
           
           {/* Lista de Produtos agrupados por categoria */}
-          <section className="py-1 px-2">
+          <section className="py-1 px-3">
             {produtosPorCategoria.map(({ categoria, produtos }) => 
               produtos.length > 0 && (
                 <div 
@@ -298,7 +298,7 @@ export default function Home() {
                   data-category={categoria.id}
                   className="mb-6 categoria-section"
                 >
-                  <h2 className="text-[22px] font-bold text-orange-500 mb-2 mx-0">{categoria.nome}</h2>
+                  <h2 className="text-[22px] font-bold text-orange-500 mb-2 mx-1">{categoria.nome}</h2>
                   <div className="border-t border-gray-200/30 mb-3"></div>
                   <ProdutoGridCompacto produtos={produtos} />
                 </div>
