@@ -45,7 +45,8 @@ export default function Home() {
         const produtos = await buscarProdutos().catch(() => []);
         setProdutosData(produtos || []);
         
-        const destaques = await buscarProdutosDestaque().catch(() => []);
+        // Buscar 3 produtos em destaque em vez do padrão
+        const destaques = await buscarProdutosDestaque(3).catch(() => []);
         setDestaquesData(destaques || []);
   
         // Buscar banners

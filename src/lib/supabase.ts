@@ -184,13 +184,20 @@ export async function buscarProdutosPorId(id: string): Promise<Produto | null> {
   }
 }
 
-export async function buscarProdutosDestaque(): Promise<Produto[]> {
+export async function buscarProdutosDestaque(limite?: number): Promise<Produto[]> {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('produtos')
       .select('*')
       .eq('destaque', true)
       .eq('disponivel', true);
+    
+    // Se um limite for especificado, aplicar
+    if (limite && limite > 0) {
+      query = query.limit(limite);
+    }
+    
+    const { data, error } = await query;
 
     if (error) {
       // Verificar se o erro é porque a tabela não existe

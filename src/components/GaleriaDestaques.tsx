@@ -16,13 +16,13 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
   
   const [emblaRef] = useEmblaCarousel({ 
     loop: false, 
-    dragFree: false,
+    dragFree: true,
     skipSnaps: false,
     containScroll: "trimSnaps",
     align: "start",
     slidesToScroll: 1,
     breakpoints: {
-      '(min-width: 768px)': { slidesToScroll: 2 }
+      '(min-width: 768px)': { slidesToScroll: 3 }
     },
     dragThreshold: 10,
     duration: 20
@@ -36,12 +36,12 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
         <div className="embla__container flex" style={{ paddingRight: '40px' }}>
           {produtos.map((produto, index) => (
             <div 
-              className={`embla__slide relative flex-[0_0_190px] min-w-0 ${index !== 0 ? 'ml-3' : ''}`}
+              className={`embla__slide relative flex-[0_0_160px] min-w-0 ${index !== 0 ? 'ml-3' : ''}`}
               key={produto.id}
             >
               <Link href={`/produto/${produto.id}`}>
                 <div className="border border-gray-200/30 rounded-lg overflow-hidden flex flex-col h-full bg-white shadow-md">
-                  <div className="h-[140px] w-full relative overflow-hidden bg-gray-50">
+                  <div className="h-[120px] w-full relative overflow-hidden bg-gray-50">
                     <Image
                       src={produto.imagem_url || "https://placehold.co/400x300?text=Produto"}
                       alt={produto.nome}
