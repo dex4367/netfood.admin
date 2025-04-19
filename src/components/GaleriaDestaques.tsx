@@ -55,8 +55,8 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
                   <div className="p-1.5 flex flex-col flex-grow h-[60px]">
                     <h3 className="text-2xs font-semibold line-clamp-2 text-[#505050]">{produto.nome}</h3>
                     
-                    <div className="mt-auto">
-                      <div className="flex flex-col">
+                    <div className="mt-auto flex flex-col justify-end flex-grow">
+                      <div className="flex flex-col pt-1.5">
                         <span className="text-gray-600 text-[10px]">A partir de</span>
                         <span className="text-orange-500 font-bold text-2xs">
                           R${produto.preco.toFixed(2).replace('.', ',')}
