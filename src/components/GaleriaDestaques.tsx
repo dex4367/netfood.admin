@@ -52,16 +52,14 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
                   
                   <div className="h-[1.5px] bg-orange-500/70 w-full"></div>
                   
-                  <div className="p-1.5 flex flex-col flex-grow h-[70px]">
-                    <h3 className="text-2xs font-semibold line-clamp-2 text-[#505050]">{produto.nome}</h3>
+                  <div className="p-1.5 flex flex-col flex-grow h-[80px]">
+                    <h3 className="text-2xs font-semibold line-clamp-2 text-[#505050] mb-auto">{produto.nome}</h3>
                     
-                    <div className="mt-auto flex flex-col justify-end flex-grow">
-                      <div className="flex flex-col pt-1.5">
-                        <span className="text-gray-600 text-[10px]">A partir de</span>
-                        <span className="text-orange-500 font-bold text-2xs">
-                          R${produto.preco.toFixed(2).replace('.', ',')}
-                        </span>
-                      </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-600 text-[10px]">A partir de</span>
+                      <span className="text-orange-500 font-bold text-2xs">
+                        R${produto.preco.toFixed(2).replace('.', ',')}
+                      </span>
                     </div>
                   </div>
                 </div>
