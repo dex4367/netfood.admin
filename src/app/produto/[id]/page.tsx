@@ -115,7 +115,7 @@ export default async function ProdutoPage({ params }: PageProps) {
     : 0;
   
   return (
-    <div className="max-w-3xl mx-auto pb-16 px-2">
+    <div className="max-w-3xl mx-auto pb-16 px-4">
       {/* Imagem Principal */}
       <div className="relative h-[300px] w-full mb-0">
         <div className="w-full h-full">

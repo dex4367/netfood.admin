@@ -1,21 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
 import { ConfiguracaoLoja } from '@/lib/supabase';
-import { FaInfoCircle, FaChevronDown, FaMapMarkerAlt, FaFileAlt, FaClock, FaCalendarAlt, 
+import { FaInfoCircle, FaMapMarkerAlt, FaFileAlt, FaClock, FaCalendarAlt, 
          FaCreditCard, FaMoneyBillWave, FaWallet, FaPiggyBank } from 'react-icons/fa';
 import { SiMastercard, SiVisa, SiAmericanexpress } from 'react-icons/si';
 import { BsCashCoin } from 'react-icons/bs';
 import { RiPixelfedFill } from 'react-icons/ri';
+import { MapPin, Phone, Clock } from 'lucide-react';
 
 interface InfoLojaProps {
   configuracao: ConfiguracaoLoja;
 }
 
 export default function InfoLoja({ configuracao }: InfoLojaProps) {
-  const [expanded, setExpanded] = useState(false);
-  
   // Normalizar as flags para evitar erros quando elas não estão definidas
   const config = {
     ...configuracao,
@@ -61,29 +58,25 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
   }
   
   return (
-    <div className="mb-8 bg-white rounded-lg shadow-md overflow-hidden px-1">
-      <button 
-        onClick={() => setExpanded(!expanded)}
-        className="w-full p-2 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition"
-      >
-        <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-          <FaInfoCircle className="h-5 w-5 mr-2 text-gray-600" />
-          Informações da Loja
-        </h2>
-        <FaChevronDown 
-          className={`h-5 w-5 transition-transform ${expanded ? 'transform rotate-180' : ''}`}
-        />
-      </button>
-      
-      {expanded && (
-        <div className="p-2 border-t border-gray-200">
+    <div className="bg-white rounded-lg">
+      <div className="mb-4 bg-white rounded-lg overflow-hidden">
+        {/* Título da seção */}
+        <div className="py-3 px-4 border-b border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+            <FaInfoCircle className="h-5 w-5 mr-2 text-red-500" />
+            Informações da Loja
+          </h2>
+        </div>
+        
+        {/* Conteúdo sempre visível */}
+        <div className="p-4">
           {temInformacoes && (
-            <div className="mb-2">
-              <h3 className="font-medium text-gray-800 mb-2">Sobre a Loja</h3>
-              <div className="space-y-2">
+            <div className="mb-6">
+              <h3 className="font-medium text-gray-800 mb-3">Sobre a Loja</h3>
+              <div className="space-y-3">
                 {config.mostrar_endereco && config.endereco && (
                   <div className="flex items-start">
-                    <FaMapMarkerAlt className="h-5 w-5 text-gray-500 mt-0.5 mr-2 flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-orange-500 mt-0.5 mr-2 flex-shrink-0" />
                     <p className="text-gray-600">{config.endereco}</p>
                   </div>
                 )}
@@ -114,12 +107,12 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
           
           {temPagamentos && (
             <div className="merchant-details-payment">
-              <div className="mb-2">
-                <h3 className="font-medium text-gray-800 mb-2">Formas de Pagamento</h3>
+              <div className="mb-6">
+                <h3 className="font-medium text-gray-800 mb-4">Formas de Pagamento</h3>
                 
-                <div className="merchant-details-payment__payment mb-2">
+                <div className="merchant-details-payment__payment mb-6">
                   {/* Métodos de pagamento online */}
-                  <div className="mb-2">
+                  <div className="mb-4">
                     <p className="font-medium text-gray-700 mb-2">Pagamento pelo site</p>
                     
                     {/* Cartões de crédito */}
@@ -128,7 +121,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
                       config.pagamento_credito_elo || 
                       config.pagamento_credito_amex || 
                       config.pagamento_credito_hipercard) && (
-                      <div className="mb-2">
+                      <div className="mb-4">
                         <p className="text-sm font-medium text-gray-700 mb-2">Crédito</p>
                         <div className="flex flex-wrap gap-2">
                           {config.pagamento_credito_mastercard && (
@@ -169,7 +162,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
                     {(config.pagamento_debito_mastercard || 
                       config.pagamento_debito_visa || 
                       config.pagamento_debito_elo) && (
-                      <div className="mb-2">
+                      <div className="mb-4">
                         <p className="text-sm font-medium text-gray-700 mb-2">Débito</p>
                         <div className="flex flex-wrap gap-2">
                           {config.pagamento_debito_mastercard && (
@@ -228,7 +221,7 @@ export default function InfoLoja({ configuracao }: InfoLojaProps) {
             </div>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 } 

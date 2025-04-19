@@ -49,15 +49,7 @@ export default function SearchSuggestions({ searchQuery, onSelectSuggestion }: S
   }, [searchQuery]);
 
   if (!searchQuery || suggestions.length === 0) {
-    return (
-      <div className="mt-1 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden">
-        <ul className="divide-y divide-gray-100">
-          <li className="p-2 text-center text-sm text-gray-500">
-            Nenhum resultado encontrado
-          </li>
-        </ul>
-      </div>
-    );
+    return null;
   }
 
   return (
@@ -71,7 +63,7 @@ export default function SearchSuggestions({ searchQuery, onSelectSuggestion }: S
           suggestions.map((produto) => (
             <li key={produto.id} className="hover:bg-orange-50">
               <button
-                className="w-full px-2 py-2 flex items-center gap-2 text-left"
+                className="w-full px-4 py-2 flex items-center gap-3 text-left"
                 onClick={() => onSelectSuggestion(produto.nome)}
               >
                 <div className="flex-shrink-0 w-10 h-10 rounded-md overflow-hidden bg-gray-100">

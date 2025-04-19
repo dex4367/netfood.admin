@@ -67,6 +67,7 @@ export type ConfiguracaoLoja = {
   nome_loja: string;
   descricao_loja: string | null;
   logo_url: string | null;
+  imagem_capa_url: string | null;
   cor_primaria: string;
   cor_secundaria: string;
   created_at: string;
@@ -110,13 +111,15 @@ export async function buscarCategorias(): Promise<Categoria[]> {
         return [];
       }
       
-      console.error('Erro ao buscar categorias:', error);
+      // Melhor log do erro
+      console.error('Erro detalhado ao buscar categorias:', JSON.stringify(error, null, 2));
       return [];
     }
 
     return data || [];
-  } catch (err) {
-    console.error('Erro ao buscar categorias:', err);
+  } catch (err: any) {
+    // Melhor log do erro no catch
+    console.error('Erro inesperado ao buscar categorias:', err instanceof Error ? err.message : String(err));
     return [];
   }
 }
@@ -368,6 +371,7 @@ export async function buscarConfiguracaoLoja(): Promise<ConfiguracaoLoja | null>
       nome_loja: 'NetFood',
       descricao_loja: 'Seu cardápio digital completo',
       logo_url: null,
+      imagem_capa_url: null,
       cor_primaria: '#16a34a', // green-600
       cor_secundaria: '#15803d', // green-700
       created_at: new Date().toISOString(),
@@ -422,6 +426,7 @@ export async function buscarConfiguracaoLoja(): Promise<ConfiguracaoLoja | null>
       nome_loja: 'NetFood',
       descricao_loja: 'Seu cardápio digital completo',
       logo_url: null,
+      imagem_capa_url: null,
       cor_primaria: '#16a34a',
       cor_secundaria: '#15803d',
       created_at: new Date().toISOString(),
@@ -448,6 +453,121 @@ export async function buscarConfiguracaoLoja(): Promise<ConfiguracaoLoja | null>
   }
 }
 
+// Função para inicializar o banco de dados automaticamente
+export async function inicializarBancoDados(): Promise<void> {
+  try {
+    console.log('Verificando banco de dados...');
+    
+    // Verificar se a tabela configuracao_loja existe
+    const { error: checkError } = await supabase.from('configuracao_loja').select('id').limit(1);
+    
+    if (checkError && checkError.code === '42P01') {
+      // Tabela não existe, mas não podemos criá-la sem funções SQL
+      console.log('A tabela configuracao_loja não existe. Usando valores padrão.');
+      
+      // Não temos permissão para criar tabelas, então apenas usaremos valores padrão
+      // Você precisará criar a tabela pelo painel do Supabase ou via migração
+      console.log('ATENÇÃO: Para criar a tabela, acesse o painel de administração do Supabase');
+    } else if (!checkError) {
+      // Tabela existe, verificar se já tem dados
+      const { data } = await supabase.from('configuracao_loja').select('id').limit(1);
+      
+      if (!data || data.length === 0) {
+        // Tabela existe mas não tem dados, inserir configuração padrão
+        const configPadrao = {
+          id: '1',
+          nome_loja: 'NetFood',
+          descricao_loja: 'Seu cardápio digital completo',
+          logo_url: null,
+          imagem_capa_url: null,
+          cor_primaria: '#16a34a',
+          cor_secundaria: '#15803d',
+          endereco: null,
+          cnpj: null,
+          horario_funcionamento: null,
+          dias_funcionamento: null,
+          mostrar_endereco: false,
+          mostrar_cnpj: false,
+          mostrar_horario: false,
+          mostrar_dias: false,
+          pagamento_carteira: false,
+          pagamento_credito_mastercard: false,
+          pagamento_credito_visa: false,
+          pagamento_credito_elo: false,
+          pagamento_credito_amex: false,
+          pagamento_credito_hipercard: false,
+          pagamento_debito_mastercard: false,
+          pagamento_debito_visa: false,
+          pagamento_debito_elo: false,
+          pagamento_pix: false,
+          pagamento_dinheiro: false
+        };
+        
+        // Inserir configuração padrão
+        const { error: insertError } = await supabase.from('configuracao_loja').insert([configPadrao]);
+        
+        if (insertError) {
+          console.log('Erro ao inserir configuração padrão:', insertError);
+        } else {
+          console.log('Configuração padrão inserida com sucesso!');
+        }
+      } else {
+        console.log('Banco de dados já inicializado!');
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao verificar banco de dados:', error);
+  }
+}
+
+// Verificar se a tabela já existe (para casos em que não temos acesso SQL direto)
+export async function verificarTabelaConfiguracaoLoja(): Promise<boolean> {
+  try {
+    const { data, error } = await supabase.from('configuracao_loja').select('id').limit(1);
+    
+    if (error && error.code === '42P01') {
+      return false; // Tabela não existe
+    }
+    
+    return true; // Tabela existe
+  } catch (error) {
+    console.error('Erro ao verificar tabela:', error);
+    return false;
+  }
+}
+
+// Verificar se precisa adicionar coluna imagem_capa_url
+export async function adicionarColunaImagemCapa(): Promise<boolean> {
+  try {
+    // Tentativa simples para verificar se a coluna existe
+    const { error: checkError } = await supabase
+      .from('configuracao_loja')
+      .select('imagem_capa_url')
+      .limit(1);
+    
+    if (checkError && checkError.message.includes('column "imagem_capa_url" does not exist')) {
+      console.log('Coluna imagem_capa_url não existe, tentando adicionar...');
+      
+      // Precisa usar SQL direto, mas isso geralmente requer permissões admin
+      const sqlCommand = `
+        ALTER TABLE configuracao_loja 
+        ADD COLUMN IF NOT EXISTS imagem_capa_url TEXT;
+      `;
+      
+      console.log('Execute o comando SQL abaixo no editor SQL do Supabase:');
+      console.log(sqlCommand);
+      
+      return false;
+    }
+    
+    console.log('Coluna imagem_capa_url já existe ou erro desconhecido.');
+    return true;
+  } catch (error) {
+    console.error('Erro ao verificar/adicionar coluna:', error);
+    return false;
+  }
+}
+
 export async function atualizarConfiguracaoLoja(config: Partial<ConfiguracaoLoja>): Promise<boolean> {
   try {
     // Verificar se já existe uma configuração
@@ -457,53 +577,10 @@ export async function atualizarConfiguracaoLoja(config: Partial<ConfiguracaoLoja
       .limit(1);
     
     if (selectError) {
-      // Verificar se o erro é porque a tabela não existe
+      // Se a tabela não existir, retorne falso para que a página administração possa mostrar um erro adequado
       if (selectError.code === '42P01') {
-        console.warn('A tabela configuracao_loja não existe. Tentando criar uma nova configuração...');
-        
-        // Tentar criar a tabela com um insert (pode falhar se o usuário não tiver permissões)
-        try {
-          const { error: insertError } = await supabase
-            .from('configuracao_loja')
-            .insert([{
-              id: '1', // ID fixo para a única configuração
-              nome_loja: config.nome_loja || 'NetFood',
-              descricao_loja: config.descricao_loja || 'Seu cardápio digital completo',
-              logo_url: config.logo_url || null,
-              cor_primaria: config.cor_primaria || '#16a34a',
-              cor_secundaria: config.cor_secundaria || '#15803d',
-              endereco: config.endereco || null,
-              cnpj: config.cnpj || null,
-              horario_funcionamento: config.horario_funcionamento || null,
-              dias_funcionamento: config.dias_funcionamento || null,
-              mostrar_endereco: config.mostrar_endereco || false,
-              mostrar_cnpj: config.mostrar_cnpj || false,
-              mostrar_horario: config.mostrar_horario || false,
-              mostrar_dias: config.mostrar_dias || false,
-              pagamento_carteira: config.pagamento_carteira || false,
-              pagamento_credito_mastercard: config.pagamento_credito_mastercard || false,
-              pagamento_credito_visa: config.pagamento_credito_visa || false,
-              pagamento_credito_elo: config.pagamento_credito_elo || false,
-              pagamento_credito_amex: config.pagamento_credito_amex || false,
-              pagamento_credito_hipercard: config.pagamento_credito_hipercard || false,
-              pagamento_debito_mastercard: config.pagamento_debito_mastercard || false,
-              pagamento_debito_visa: config.pagamento_debito_visa || false,
-              pagamento_debito_elo: config.pagamento_debito_elo || false,
-              pagamento_pix: config.pagamento_pix || false,
-              pagamento_dinheiro: config.pagamento_dinheiro || false,
-              created_at: new Date().toISOString()
-            }]);
-          
-          if (insertError) {
-            console.error('Erro ao criar nova tabela/configuração:', insertError);
-            return false;
-          }
-          
-          return true;
-        } catch (insertErr) {
-          console.error('Erro ao tentar criar nova configuração:', insertErr);
-          return false;
-        }
+        console.error('A tabela configuracao_loja não existe. Acesse o painel do Supabase para criá-la.');
+        return false;
       }
       
       console.error('Erro ao verificar configuração existente:', selectError);
@@ -519,39 +596,62 @@ export async function atualizarConfiguracaoLoja(config: Partial<ConfiguracaoLoja
           nome_loja: config.nome_loja || 'NetFood',
           descricao_loja: config.descricao_loja || 'Seu cardápio digital completo',
           logo_url: config.logo_url || null,
+          imagem_capa_url: config.imagem_capa_url || null,
           cor_primaria: config.cor_primaria || '#16a34a',
           cor_secundaria: config.cor_secundaria || '#15803d',
           endereco: config.endereco || null,
           cnpj: config.cnpj || null,
           horario_funcionamento: config.horario_funcionamento || null,
           dias_funcionamento: config.dias_funcionamento || null,
-          mostrar_endereco: config.mostrar_endereco || false,
-          mostrar_cnpj: config.mostrar_cnpj || false,
-          mostrar_horario: config.mostrar_horario || false,
-          mostrar_dias: config.mostrar_dias || false,
-          pagamento_carteira: config.pagamento_carteira || false,
-          pagamento_credito_mastercard: config.pagamento_credito_mastercard || false,
-          pagamento_credito_visa: config.pagamento_credito_visa || false,
-          pagamento_credito_elo: config.pagamento_credito_elo || false,
-          pagamento_credito_amex: config.pagamento_credito_amex || false,
-          pagamento_credito_hipercard: config.pagamento_credito_hipercard || false,
-          pagamento_debito_mastercard: config.pagamento_debito_mastercard || false,
-          pagamento_debito_visa: config.pagamento_debito_visa || false,
-          pagamento_debito_elo: config.pagamento_debito_elo || false,
-          pagamento_pix: config.pagamento_pix || false,
-          pagamento_dinheiro: config.pagamento_dinheiro || false,
+          mostrar_endereco: config.mostrar_endereco !== undefined ? config.mostrar_endereco : false,
+          mostrar_cnpj: config.mostrar_cnpj !== undefined ? config.mostrar_cnpj : false,
+          mostrar_horario: config.mostrar_horario !== undefined ? config.mostrar_horario : false,
+          mostrar_dias: config.mostrar_dias !== undefined ? config.mostrar_dias : false,
+          pagamento_carteira: config.pagamento_carteira !== undefined ? config.pagamento_carteira : false,
+          pagamento_credito_mastercard: config.pagamento_credito_mastercard !== undefined ? config.pagamento_credito_mastercard : false,
+          pagamento_credito_visa: config.pagamento_credito_visa !== undefined ? config.pagamento_credito_visa : false,
+          pagamento_credito_elo: config.pagamento_credito_elo !== undefined ? config.pagamento_credito_elo : false,
+          pagamento_credito_amex: config.pagamento_credito_amex !== undefined ? config.pagamento_credito_amex : false,
+          pagamento_credito_hipercard: config.pagamento_credito_hipercard !== undefined ? config.pagamento_credito_hipercard : false,
+          pagamento_debito_mastercard: config.pagamento_debito_mastercard !== undefined ? config.pagamento_debito_mastercard : false,
+          pagamento_debito_visa: config.pagamento_debito_visa !== undefined ? config.pagamento_debito_visa : false,
+          pagamento_debito_elo: config.pagamento_debito_elo !== undefined ? config.pagamento_debito_elo : false,
+          pagamento_pix: config.pagamento_pix !== undefined ? config.pagamento_pix : false,
+          pagamento_dinheiro: config.pagamento_dinheiro !== undefined ? config.pagamento_dinheiro : false,
           created_at: new Date().toISOString()
         }]);
       
       if (insertError) {
-        console.error('Erro ao inserir configuração:', insertError);
+        console.error('Erro ao inserir nova configuração:', insertError);
         return false;
       }
     } else {
+      // Certifique-se de que todos os booleanos estejam definidos corretamente para evitar problemas de tipagem
+      const updateData: Partial<ConfiguracaoLoja> = {
+        ...config
+      };
+      
+      // Garantir que todos os campos booleanos sejam explicitamente boolean
+      if (updateData.mostrar_endereco !== undefined) updateData.mostrar_endereco = !!updateData.mostrar_endereco;
+      if (updateData.mostrar_cnpj !== undefined) updateData.mostrar_cnpj = !!updateData.mostrar_cnpj;
+      if (updateData.mostrar_horario !== undefined) updateData.mostrar_horario = !!updateData.mostrar_horario;
+      if (updateData.mostrar_dias !== undefined) updateData.mostrar_dias = !!updateData.mostrar_dias;
+      if (updateData.pagamento_carteira !== undefined) updateData.pagamento_carteira = !!updateData.pagamento_carteira;
+      if (updateData.pagamento_credito_mastercard !== undefined) updateData.pagamento_credito_mastercard = !!updateData.pagamento_credito_mastercard;
+      if (updateData.pagamento_credito_visa !== undefined) updateData.pagamento_credito_visa = !!updateData.pagamento_credito_visa;
+      if (updateData.pagamento_credito_elo !== undefined) updateData.pagamento_credito_elo = !!updateData.pagamento_credito_elo;
+      if (updateData.pagamento_credito_amex !== undefined) updateData.pagamento_credito_amex = !!updateData.pagamento_credito_amex;
+      if (updateData.pagamento_credito_hipercard !== undefined) updateData.pagamento_credito_hipercard = !!updateData.pagamento_credito_hipercard;
+      if (updateData.pagamento_debito_mastercard !== undefined) updateData.pagamento_debito_mastercard = !!updateData.pagamento_debito_mastercard;
+      if (updateData.pagamento_debito_visa !== undefined) updateData.pagamento_debito_visa = !!updateData.pagamento_debito_visa;
+      if (updateData.pagamento_debito_elo !== undefined) updateData.pagamento_debito_elo = !!updateData.pagamento_debito_elo;
+      if (updateData.pagamento_pix !== undefined) updateData.pagamento_pix = !!updateData.pagamento_pix;
+      if (updateData.pagamento_dinheiro !== undefined) updateData.pagamento_dinheiro = !!updateData.pagamento_dinheiro;
+      
       // Atualizar configuração existente
       const { error: updateError } = await supabase
         .from('configuracao_loja')
-        .update(config)
+        .update(updateData)
         .eq('id', data[0].id);
       
       if (updateError) {
@@ -561,8 +661,8 @@ export async function atualizarConfiguracaoLoja(config: Partial<ConfiguracaoLoja
     }
     
     return true;
-  } catch (err) {
-    console.error('Erro ao atualizar configuração da loja:', err);
+  } catch (err: any) {
+    console.error('Erro inesperado ao atualizar configuração da loja:', err instanceof Error ? err.message : String(err));
     return false;
   }
 }

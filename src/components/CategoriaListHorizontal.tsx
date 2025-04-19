@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Categoria } from '@/lib/supabase';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 // Estender a interface Window para incluir a propriedade scrollTimer
 declare global {
@@ -18,7 +20,7 @@ interface Props {
 }
 
 const CategoriaListHorizontal: React.FC<Props> = ({
-  categorias,
+  categorias = [],
   categoriaAtiva,
   setCategoriaAtiva,
   className = '',
@@ -30,6 +32,9 @@ const CategoriaListHorizontal: React.FC<Props> = ({
   const prevCategoriaAtiva = useRef<string | null>(categoriaAtiva);
   const [isScrolling, setIsScrolling] = useState(false);
   const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pathname = usePathname();
+
+  const isHomePage = pathname === '/';
 
   // Função para lidar com cliques nas categorias
   const handleCategoryClick = (id: string) => {
@@ -37,11 +42,39 @@ const CategoriaListHorizontal: React.FC<Props> = ({
     
     setCategoriaAtiva(id);
     
-    // Iniciar animação quando a categoria mudar por clique direto
-    setIsAnimating(true);
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 600);
+    // Encontrar o elemento da seção correspondente e rolar até ele
+    const sectionElement = document.getElementById(`section-${id}`);
+    if (sectionElement) {
+      const headerHeight = 110; // Altura aproximada do cabeçalho
+      const yOffset = -headerHeight;
+      const y = sectionElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    
+    // Centralizar a categoria ativa no scroll horizontal
+    centralizarCategoriaAtiva(id);
+  };
+
+  const centralizarCategoriaAtiva = (categoryId: string) => {
+    if (!categoriaListRef.current) return;
+    
+    const container = categoriaListRef.current;
+    const activeButton = container.querySelector(`[data-category-id="${categoryId}"]`) as HTMLElement;
+    
+    if (activeButton) {
+      const containerWidth = container.offsetWidth;
+      const buttonLeft = activeButton.offsetLeft;
+      const buttonWidth = activeButton.offsetWidth;
+      
+      // Calcula a posição para centralizar o botão
+      const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
+      
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
+    }
   };
 
   // Centralizar a categoria ativa no scroll horizontal da barra quando ela mudar
@@ -62,32 +95,36 @@ const CategoriaListHorizontal: React.FC<Props> = ({
         setIsAnimating(true);
         setTimeout(() => setIsAnimating(false), 300);
       }
-    }
-    
-    // Centralizar o botão da categoria ativa no scroll horizontal da barra
-    const scrollToActiveCategory = () => {
-      const container = categoriaListRef.current;
-      const activeBtn = activeCategoryRef.current;
       
-      if (container && activeBtn) {
-        // Calcular posição para centralizar
-        const containerWidth = container.offsetWidth;
-        const btnLeft = activeBtn.offsetLeft;
-        const btnWidth = activeBtn.offsetWidth;
+      // Centralizar o botão da categoria ativa no scroll horizontal da barra
+      const scrollToActiveCategory = () => {
+        const container = categoriaListRef.current;
+        const activeBtn = activeCategoryRef.current;
         
-        const scrollPosition = btnLeft - (containerWidth / 2) + (btnWidth / 2);
-        
-        // Scroll suave para a categoria ativa
-        container.scrollTo({
-          left: Math.max(0, scrollPosition),
-          behavior: 'smooth'
-        });
+        if (container && activeBtn) {
+          // Calcular posição para centralizar
+          const containerWidth = container.offsetWidth;
+          const btnLeft = activeBtn.offsetLeft;
+          const btnWidth = activeBtn.offsetWidth;
+          
+          const scrollPosition = btnLeft - (containerWidth / 2) + (btnWidth / 2);
+          
+          // Scroll suave para a categoria ativa
+          container.scrollTo({
+            left: Math.max(0, scrollPosition),
+            behavior: isScrolling ? 'auto' : 'smooth' // Comportamento instantâneo quando rolando
+          });
+        }
+      };
+      
+      // Executar imediatamente para uma resposta mais rápida quando rolando
+      if (isScrolling) {
+        scrollToActiveCategory();
+      } else {
+        // Pequeno delay para garantir que as dimensões estão corretas quando clicando
+        setTimeout(scrollToActiveCategory, 50);
       }
-    };
-    
-    // Pequeno delay para garantir que as dimensões estão corretas
-    setTimeout(scrollToActiveCategory, 50);
-    
+    }
   }, [categoriaAtiva, isScrolling]);
 
   // Monitorar o evento de scroll da página
@@ -135,57 +172,77 @@ const CategoriaListHorizontal: React.FC<Props> = ({
   }, []);
 
   // Preparar as categorias para exibição
-  const todasAsCategorias = [
-    { id: 'todos', nome: 'Todos' },
+  const todasAsCategorias = categorias ? [
+    { id: 0, nome: 'Todos' },
     ...categorias
-  ];
+  ] : [];
+
+  useEffect(() => {
+    if (isHomePage && categoriaAtiva && activeCategoryRef.current && categoriaListRef.current) {
+      const container = categoriaListRef.current;
+      const activeElement = activeCategoryRef.current;
+      
+      const containerWidth = container.offsetWidth;
+      const activeElementLeft = activeElement.offsetLeft;
+      const activeElementWidth = activeElement.offsetWidth;
+      
+      const scrollPosition = activeElementLeft - (containerWidth / 2) + (activeElementWidth / 2);
+      
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, [categoriaAtiva, isHomePage]);
 
   return (
-    <div className={`w-full bg-white min-h-[45px] ${className}`}>
+    <div className={`w-full bg-white min-h-[36px] ${className}`}>
       <div 
         ref={categoriaListRef}
-        className="overflow-x-auto hide-scrollbar pl-1" 
+        className="bg-white w-full flex overflow-x-auto scrollbar-hide"
         style={{ 
           msOverflowStyle: 'none',
           scrollbarWidth: 'none',
           paddingTop: '4px',
           paddingBottom: '3px',
           display: 'flex',
-          flexWrap: 'nowrap'
+          flexWrap: 'nowrap',
+          paddingLeft: '0',
+          marginLeft: '-16px'
         }}
       >
-        {/* Espaçamento inicial */}
-        <div className="w-1 flex-shrink-0"></div>
-        
         {todasAsCategorias.map((categoria, index) => (
           <div 
             key={categoria.id} 
-            className={`flex-shrink-0 ${index === 0 ? 'pl-1' : 'px-2'}`} 
-            style={{ display: 'inline-block' }}
+            className={`flex-shrink-0 ${index === 0 ? 'ml-0' : 'px-4'}`}
+            style={{ 
+              display: 'inline-block',
+              ...(index === 0 ? { marginLeft: '16px' } : {})
+            }}
           >
             <button
               ref={categoria.id === categoriaAtiva ? activeCategoryRef : null}
-              onClick={() => handleCategoryClick(categoria.id)}
-              onMouseEnter={() => setHoveredCategory(categoria.id)}
+              onClick={() => handleCategoryClick(categoria.id.toString())}
+              onMouseEnter={() => setHoveredCategory(categoria.id.toString())}
               onMouseLeave={() => setHoveredCategory(null)}
-              onTouchStart={() => handleTouchStart(categoria.id)}
-              data-category-id={categoria.id}
+              onTouchStart={() => handleTouchStart(categoria.id.toString())}
+              data-category-id={categoria.id.toString()}
               className={`whitespace-nowrap px-2.5 py-0.5 text-[15px] font-medium rounded-full relative transition-colors categoria-item
                 ${
-                  categoria.id === categoriaAtiva 
+                  categoria.id.toString() === categoriaAtiva 
                     ? 'text-orange-500 categoria-ativa' 
-                    : categoria.id === hoveredCategory 
+                    : categoria.id.toString() === hoveredCategory 
                       ? 'text-orange-400' 
                       : 'text-gray-500'
                 }
-                ${categoria.id === categoriaAtiva && isAnimating ? 'animate-pulse-soft' : ''}
+                ${categoria.id.toString() === categoriaAtiva && isAnimating ? 'animate-pulse-soft' : ''}
               `}
             >
               {categoria.nome}
-              {categoria.id === categoriaAtiva ? null : (
+              {categoria.id.toString() === categoriaAtiva ? null : (
                 <div 
-                  className={`absolute bottom-[-2px] left-0 right-0 mx-auto w-auto h-[2px] rounded-full transition-opacity duration-150
-                    ${categoria.id === hoveredCategory 
+                  className={`absolute bottom-[-2px] left-0 right-0 mx-auto w-auto h-[1.5px] rounded-full transition-opacity duration-150
+                    ${categoria.id.toString() === hoveredCategory 
                         ? 'bg-orange-300 opacity-70' 
                         : 'opacity-0'
                     }
@@ -199,9 +256,6 @@ const CategoriaListHorizontal: React.FC<Props> = ({
             </button>
           </div>
         ))}
-        
-        {/* Pequeno espaçamento final */}
-        <div className="w-2 flex-shrink-0"></div>
       </div>
       
       {/* Estilo para animações */}

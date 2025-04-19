@@ -39,6 +39,16 @@ const nextConfig = {
   // Configuração para garantir que a aplicação funcione em produção
   reactStrictMode: false,
   
+  // Tratamento de páginas não encontradas
+  async rewrites() {
+    return [
+      {
+        source: '/login',
+        destination: '/app/login',
+      },
+    ];
+  },
+  
   // Configuração para tratar erros 404 corretamente
   async redirects() {
     return [

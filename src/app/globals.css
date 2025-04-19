@@ -3,18 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Margem lateral global de 5px */
-.container, main, section, .main-content, 
-[class*="mx-auto"], [class*="px-"], 
-.App > div, .produto-grid, .produto-card,
-.produto-card-compacto, .barra-categoria,
-.categoria-list-horizontal, .search-bar,
-.info-loja, .banner-carousel, .destaque-grid,
-header > div, footer > div {
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
@@ -35,8 +23,13 @@ header > div, footer > div {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
   font-family: Arial, Helvetica, sans-serif;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -150,6 +143,19 @@ body {
   min-height: 30px;
 }
 
+/* Estilos para a barra de categorias no cabeçalho */
+.header-wrapper .category-bar {
+  background-color: white;
+  overflow-x: auto;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.header-wrapper .category-bar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Categorias - personalização */
 .categoria-item {
   position: relative;
@@ -193,4 +199,32 @@ body {
     --foreground-rgb: 0, 0, 0;
     --background-rgb: 255, 255, 255;
   }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.categories-bar {
+  position: fixed;
+  width: 100%;
+  min-height: 28px;
+  top: 106px;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+  z-index: 48;
+  transition: top 0.3s ease;
+}
+
+.categories-bar.is-sticky {
+  top: 50px;
 }

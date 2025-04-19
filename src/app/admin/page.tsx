@@ -2,8 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Produto, Categoria } from '@/lib/supabase';
+import { 
+  ShoppingBag, 
+  Users, 
+  Tag, 
+  Image as ImageIcon, 
+  Settings, 
+  ArrowUpRight 
+} from 'lucide-react';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -13,6 +22,8 @@ export default function AdminDashboard() {
     produtosDisponiveis: 0,
     categorias: 0,
     banners: 0,
+    produtos: 0,
+    usuarios: 0,
   });
   const [recentProdutos, setRecentProdutos] = useState<Produto[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -61,6 +72,8 @@ export default function AdminDashboard() {
           produtosDisponiveis: produtosDisponiveis.length,
           categorias: categoriasData?.length || 0,
           banners: bannersData?.length || 0,
+          produtos: produtos?.length || 0,
+          usuarios: 0, // Assuming usuarios count is not available in the current query
         });
       } catch (error) {
         console.error('Erro ao carregar dados do dashboard:', error);
@@ -74,255 +87,192 @@ export default function AdminDashboard() {
 
   const cards = [
     {
-      title: 'Total de Produtos',
-      value: stats.totalProdutos,
-      icon: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4',
-      color: 'bg-blue-100 text-blue-800',
-      iconColor: 'text-blue-500',
-      link: '/admin/produtos'
-    },
-    {
-      title: 'Produtos em Destaque',
-      value: stats.produtosDestaque,
-      icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z',
-      color: 'bg-yellow-100 text-yellow-800',
-      iconColor: 'text-yellow-500',
-      link: '/admin/produtos'
+      title: 'Produtos',
+      value: stats.produtos,
+      icon: ShoppingBag,
+      color: 'bg-blue-500',
+      href: '/admin/produtos',
     },
     {
       title: 'Categorias',
       value: stats.categorias,
-      icon: 'M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01',
-      color: 'bg-green-100 text-green-800',
-      iconColor: 'text-green-500',
-      link: '/admin/categorias'
+      icon: Tag,
+      color: 'bg-amber-500',
+      href: '/admin/categorias',
     },
     {
       title: 'Banners',
       value: stats.banners,
-      icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
-      color: 'bg-purple-100 text-purple-800',
-      iconColor: 'text-purple-500',
-      link: '/admin/banners'
-    }
+      icon: ImageIcon,
+      color: 'bg-emerald-500',
+      href: '/admin/banners',
+    },
+    {
+      title: 'Usuários',
+      value: stats.usuarios,
+      icon: Users,
+      color: 'bg-purple-500',
+      href: '/admin/usuarios',
+    },
   ];
 
   const quickLinks = [
-    { name: 'Adicionar Produto', href: '/admin/produto/novo', icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6', color: 'bg-green-500 hover:bg-green-600' },
-    { name: 'Nova Categoria', href: '/admin/categoria/nova', icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6', color: 'bg-blue-500 hover:bg-blue-600' },
-    { name: 'Gerenciar Complementos', href: '/admin/complementos', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', color: 'bg-purple-500 hover:bg-purple-600' },
-    { name: 'Configurações', href: '/admin/configuracao', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', color: 'bg-gray-500 hover:bg-gray-600' },
+    { name: 'Novo Produto', href: '/admin/produto/novo', icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6', color: 'bg-gradient-to-r from-green-500 to-green-600' },
+    { name: 'Nova Categoria', href: '/admin/categoria/nova', icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6', color: 'bg-gradient-to-r from-blue-500 to-blue-600' },
+    { name: 'Banners', href: '/admin/banners', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', color: 'bg-gradient-to-r from-purple-500 to-purple-600' },
+    { name: 'Configurações', href: '/admin/configuracao', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z', color: 'bg-gradient-to-r from-gray-500 to-gray-600' },
   ];
 
   if (loading) {
     return (
-      <div className="flex justify-center my-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      <div className="flex justify-center items-center h-full">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mb-3"></div>
+          <p className="text-gray-600">Carregando painel administrativo...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Cabeçalho da página */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-gray-600">Bem-vindo ao painel administrativo do NetFood.</p>
+    <>
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Painel Administrativo</h1>
+        <Link 
+          href="/admin/configuracao" 
+          className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900"
+        >
+          <Settings className="h-5 w-5 mr-1" />
+          Configurações
+        </Link>
       </div>
-      
-      {/* Cards de estatísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {cards.map((card, index) => (
-          <Link 
-            key={index} 
-            href={card.link}
-            className="bg-white overflow-hidden shadow rounded-lg transition-transform hover:scale-105"
+
+      {/* Cards */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card) => (
+          <Link
+            key={card.title}
+            href={card.href}
+            className="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow"
           >
             <div className="p-5">
               <div className="flex items-center">
-                <div className={`flex-shrink-0 rounded-md p-3 ${card.color}`}>
-                  <svg 
-                    className={`h-6 w-6 ${card.iconColor}`} 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={card.icon} />
-                  </svg>
+                <div className={`flex-shrink-0 p-3 rounded-md ${card.color}`}>
+                  <card.icon className="h-6 w-6 text-white" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">{card.title}</dt>
                     <dd>
-                      <div className="text-lg font-bold text-gray-900">{card.value}</div>
+                      <div className="text-lg font-semibold text-gray-900">{card.value}</div>
                     </dd>
                   </dl>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 px-5 py-3">
+              <div className="text-sm">
+                <div className="font-medium text-blue-600 hover:text-blue-500 flex items-center">
+                  Ver todos
+                  <ArrowUpRight className="h-4 w-4 ml-1" />
                 </div>
               </div>
             </div>
           </Link>
         ))}
       </div>
-      
-      {/* Acesso rápido */}
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-700">Acesso Rápido</h2>
-        </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickLinks.map((link, index) => (
-              <Link
-                key={index}
-                href={link.href}
-                className={`flex items-center justify-center text-white font-medium p-4 rounded-lg ${link.color} transition-colors`}
-              >
-                <svg 
-                  className="h-5 w-5 mr-2" 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
-                </svg>
-                {link.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-      
-      {/* Produtos e Categorias */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Produtos recentes */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-            <h2 className="text-lg font-medium text-gray-700">Produtos Recentes</h2>
-            <Link href="/admin/produtos" className="text-sm text-green-600 hover:text-green-800">
-              Ver todos
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {recentProdutos.length === 0 ? (
-              <div className="p-6 text-center text-gray-500">
-                Nenhum produto encontrado
-              </div>
-            ) : (
-              recentProdutos.map((produto) => (
-                <Link 
-                  key={produto.id} 
-                  href={`/admin/produto/${produto.id}`}
-                  className="block hover:bg-gray-50"
-                >
-                  <div className="px-6 py-4 flex items-center">
-                    <div className={`w-3 h-3 rounded-full mr-3 ${produto.disponivel ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">{produto.nome}</p>
-                      <p className="text-sm text-gray-500 truncate">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(produto.preco)}
-                      </p>
-                    </div>
-                    <div>
-                      <svg 
-                        className="h-5 w-5 text-gray-400" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-        
-        {/* Categorias */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-            <h2 className="text-lg font-medium text-gray-700">Categorias</h2>
-            <Link href="/admin/categorias" className="text-sm text-green-600 hover:text-green-800">
-              Ver todas
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {categorias.length === 0 ? (
-              <div className="p-6 text-center text-gray-500">
-                Nenhuma categoria encontrada
-              </div>
-            ) : (
-              categorias.slice(0, 5).map((categoria) => (
-                <Link 
-                  key={categoria.id} 
-                  href={`/admin/categoria/${categoria.id}`}
-                  className="block hover:bg-gray-50"
-                >
-                  <div className="px-6 py-4 flex items-center">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">{categoria.nome}</p>
-                      {categoria.descricao && (
-                        <p className="text-sm text-gray-500 truncate">{categoria.descricao}</p>
-                      )}
-                    </div>
-                    <div className="flex items-center">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        Ordem: {categoria.ordem}
-                      </span>
-                      <svg 
-                        className="ml-2 h-5 w-5 text-gray-400" 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-      
-      {/* Card de ajuda */}
-      <div className="bg-gradient-to-r from-green-500 to-green-600 shadow-lg rounded-lg overflow-hidden">
-        <div className="p-6 sm:p-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2">Precisa de ajuda?</h3>
-              <p className="text-green-100 mb-4">Consulte nossa documentação ou entre em contato com o suporte.</p>
-              <div className="flex space-x-3">
-                <a 
-                  href="https://github.com/dex4367/netfood.admin" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-green-700 bg-white hover:bg-green-50"
-                >
-                  Documentação
-                </a>
-              </div>
-            </div>
-            <div className="hidden lg:block">
-              <svg 
-                className="h-24 w-24 text-white opacity-25" 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+
+      {/* Quick links */}
+      <h2 className="text-lg font-medium text-gray-900 mt-8 mb-4">Ações rápidas</h2>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {quickLinks.map((link) => (
+          <Link
+            key={link.name}
+            href={link.href}
+            className="flex items-center p-5 bg-white shadow rounded-lg hover:shadow-md transition-shadow"
+          >
+            <div className={`flex-shrink-0 p-3 rounded-md ${link.color}`}>
+              <svg
+                className="h-6 w-6 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
               </svg>
             </div>
-          </div>
-        </div>
+            <div className="ml-4">
+              <p className="text-base font-medium text-gray-900">{link.name}</p>
+            </div>
+          </Link>
+        ))}
       </div>
-    </div>
+
+      {/* Produtos recentes */}
+      <h2 className="text-lg font-medium text-gray-900 mt-8 mb-4">Produtos recentes</h2>
+      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        <ul className="divide-y divide-gray-200">
+          {recentProdutos.length > 0 ? (
+            recentProdutos.map((produto) => (
+              <li key={produto.id}>
+                <Link href={`/admin/produto/${produto.id}`} className="block hover:bg-gray-50">
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        {produto.imagem_url ? (
+                          <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-100">
+                            <Image 
+                              src={produto.imagem_url} 
+                              alt={produto.nome} 
+                              width={40} 
+                              height={40}
+                              className="h-10 w-10 object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <ShoppingBag className="h-5 w-5 text-gray-500" />
+                          </div>
+                        )}
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-blue-600">{produto.nome}</div>
+                          <div className="text-sm text-gray-500">
+                            {produto.descricao ? (
+                              produto.descricao.length > 60 ? 
+                                `${produto.descricao.substring(0, 60)}...` : 
+                                produto.descricao
+                            ) : (
+                              "Sem descrição"
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <div className="text-sm font-semibold text-gray-900">
+                          R$ {produto.preco.toFixed(2).replace('.', ',')}
+                        </div>
+                        <div className="mt-1 flex items-center text-sm">
+                          <span 
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${produto.disponivel ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                          >
+                            {produto.disponivel ? 'Disponível' : 'Indisponível'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            ))
+          ) : (
+            <li className="px-4 py-5 text-center text-gray-500">
+              Nenhum produto cadastrado.
+            </li>
+          )}
+        </ul>
+      </div>
+    </>
   );
 } 

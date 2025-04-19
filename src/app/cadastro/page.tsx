@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 
 export default function Cadastro() {
@@ -15,6 +15,7 @@ export default function Cadastro() {
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
   const router = useRouter();
+  const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,60 +43,14 @@ export default function Cadastro() {
     setSucesso('');
 
     try {
-      // 1. Criar usuário no Authentication do Supabase
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            nome: nome,
-            nome_restaurante: nomeRestaurante
-          }
-        }
+      // Usar a função signUp do contexto de autenticação
+      const { error, success, user } = await signUp(email, password, {
+        nome,
+        nome_restaurante: nomeRestaurante
       });
 
-      if (authError) {
-        throw authError;
-      }
-
-      // 2. Criar configuração padrão para o restaurante
-      if (authData.user) {
-        const { error: configError } = await supabase
-          .from('configuracao_loja')
-          .insert([
-            {
-              id: authData.user.id,
-              nome_loja: nomeRestaurante,
-              descricao_loja: `Cardápio digital de ${nomeRestaurante}`,
-              cor_primaria: '#16a34a',
-              cor_secundaria: '#15803d',
-              created_at: new Date().toISOString(),
-              endereco: null,
-              cnpj: null,
-              horario_funcionamento: null,
-              dias_funcionamento: null,
-              mostrar_endereco: false,
-              mostrar_cnpj: false,
-              mostrar_horario: false,
-              mostrar_dias: false,
-              pagamento_carteira: false,
-              pagamento_credito_mastercard: false,
-              pagamento_credito_visa: false,
-              pagamento_credito_elo: false,
-              pagamento_credito_amex: false,
-              pagamento_credito_hipercard: false,
-              pagamento_debito_mastercard: false,
-              pagamento_debito_visa: false,
-              pagamento_debito_elo: false,
-              pagamento_pix: false,
-              pagamento_dinheiro: false
-            }
-          ]);
-
-        if (configError) {
-          console.error('Erro ao criar configuração:', configError);
-          // Não interrompemos o cadastro se apenas a configuração falhar
-        }
+      if (error) {
+        throw error;
       }
 
       setSucesso('Conta criada com sucesso! Verifique seu e-mail para confirmar seu cadastro.');

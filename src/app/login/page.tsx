@@ -3,116 +3,118 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { FaUser, FaLock } from 'react-icons/fa';
-import Logo from '@/components/Logo';
 import Link from 'next/link';
 
-export default function Login() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  
   const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const { signIn } = useAuth();
+  
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
     setLoading(true);
-    setError(null);
-
+    
     try {
-      const { error, success } = await signIn(email, password);
+      const { error } = await signIn(email, password);
       
-      if (success) {
-        router.push('/admin');
-      } else {
-        setError(error?.message || 'Erro ao fazer login. Verifique suas credenciais.');
+      if (error) {
+        throw new Error(error.message);
       }
+      
+      // Redirecionar para o painel admin
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect') || '/admin';
+      router.push(redirectTo);
+      
     } catch (err: any) {
-      setError(err.message || 'Ocorreu um erro durante o login.');
+      setError(err.message || 'Falha ao fazer login. Verifique suas credenciais.');
     } finally {
       setLoading(false);
     }
-  };
-
+  }
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <Logo />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Acesso ao Painel Admin
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Digite suas credenciais para acessar
+          </p>
         </div>
         
-        <h1 className="text-2xl font-bold text-center mb-6 text-primary">
-          Login Administrativo
-        </h1>
-        
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+            <div className="flex">
+              <div className="ml-3">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
           </div>
         )}
         
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              Email
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <FaUser className="text-gray-400" />
-              </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">Email</label>
               <input
-                id="email"
+                id="email-address"
+                name="email"
                 type="email"
-                className="pl-10 w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Seu email"
+                autoComplete="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Email"
               />
             </div>
-          </div>
-          
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Senha
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <FaLock className="text-gray-400" />
-              </div>
+            <div>
+              <label htmlFor="password" className="sr-only">Senha</label>
               <input
                 id="password"
+                name="password"
                 type="password"
-                className="pl-10 w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Sua senha"
+                autoComplete="current-password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Senha"
               />
             </div>
           </div>
           
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-4 rounded focus:outline-none focus:ring-2 focus:ring-primary transition duration-300"
-          >
-            {loading ? 'Processando...' : 'Entrar'}
-          </button>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70"
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </div>
+          
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm">
+              <Link href="/cadastro" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Criar nova conta
+              </Link>
+            </div>
+            <div className="text-sm">
+              <Link href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Voltar para o site
+              </Link>
+            </div>
+          </div>
         </form>
-        
-        <div className="mt-6 text-center">
-          <Link href="/cadastro" className="text-primary hover:text-primary-dark font-medium">
-            Não tem uma conta? Cadastre-se aqui
-          </Link>
-        </div>
-        
-        <div className="mt-4 text-center">
-          <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm">
-            Voltar para o cardápio
-          </Link>
-        </div>
       </div>
     </div>
   );

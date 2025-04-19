@@ -97,12 +97,12 @@ export default function BannerCarousel({ banners, autoplayDelay = 5000 }: Banner
     : banners;
 
   return (
-    <div className="relative overflow-hidden mx-auto my-2 pl-1">
+    <div className="relative overflow-hidden mx-auto my-2">
       <div className="embla overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex" style={{ paddingRight: '100px' }}>
           {displayBanners.map((banner, index) => (
             <div
-              className="embla__slide relative flex-[0_0_350px] h-[150px] min-w-0 ml-1"
+              className="embla__slide relative flex-[0_0_350px] h-[150px] min-w-0 mr-2.5"
               key={`${banner.id}-${index}`}
             >
               <Image
@@ -114,7 +114,7 @@ export default function BannerCarousel({ banners, autoplayDelay = 5000 }: Banner
                 className="w-full h-full object-cover rounded-lg"
               />
               {banner.titulo && (
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-white">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 text-white">
                   <h3 className="font-bold text-sm">{banner.titulo}</h3>
                   {banner.subtitulo && <p className="text-xs">{banner.subtitulo}</p>}
                 </div>

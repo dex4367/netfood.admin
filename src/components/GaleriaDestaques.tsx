@@ -29,8 +29,8 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
   });
 
   return (
-    <div className="px-2 py-3 max-w-3xl relative mb-2">
-      <h2 className="text-[22px] font-bold mb-3 text-orange-500">{titulo}</h2>
+    <div className="py-3 max-w-3xl relative mb-2">
+      <h2 className="text-[22px] font-bold mb-4 text-orange-500">{titulo}</h2>
       
       <div className="embla overflow-hidden" ref={emblaRef}>
         <div className="embla__container flex" style={{ paddingRight: '40px' }}>
@@ -41,13 +41,12 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
             >
               <Link href={`/produto/${produto.id}`}>
                 <div className="border border-gray-200/30 rounded-lg overflow-hidden flex flex-col h-full bg-white shadow-md">
-                  <div className="h-[100px] w-[100px] mx-auto relative overflow-hidden bg-gray-50">
+                  <div className="h-[140px] w-full relative overflow-hidden bg-gray-50">
                     <Image
                       src={produto.imagem_url || "https://placehold.co/400x300?text=Produto"}
                       alt={produto.nome}
-                      width={100}
-                      height={100}
-                      className="transition-transform hover:scale-105 rounded-t-lg object-contain"
+                      fill
+                      className="transition-transform hover:scale-105 object-cover"
                     />
                   </div>
                   
@@ -57,7 +56,7 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
                     <h3 className="text-sm font-semibold line-clamp-2 mb-1 text-[#505050]">{produto.nome}</h3>
                     
                     <p className="text-xs text-gray-600 line-clamp-2 mb-1 flex-grow">
-                      {produto.descricao.length > 60 
+                      {produto.descricao?.length > 60 
                         ? `${produto.descricao.substring(0, 60)}...` 
                         : produto.descricao}
                     </p>

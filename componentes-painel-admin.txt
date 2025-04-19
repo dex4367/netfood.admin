@@ -1,0 +1,93 @@
+# Componentes Necessários para o Painel Administrativo
+
+## Módulos Principais:
+- Dashboard (visão geral)
+- Produtos
+- Categorias
+- Complementos
+- Configurações da Loja
+- Banners
+- Métodos de Pagamento
+- Pedidos
+
+## Componentes Visuais:
+- Cards de Estatísticas (vendas, produtos, etc)
+- Tabelas para listagem de dados
+- Formulários para cadastro/edição
+- Seletores de imagem com preview
+- Seletores de cor com paleta
+- Toggle switches para estados on/off
+
+## Componentes Específicos:
+
+### Produto:
+- Nome
+- Descrição
+- Preço
+- Imagem
+- Categoria
+- Disponibilidade (toggle)
+- Destaque (toggle)
+- Complementos associados
+- Tempo de preparo
+
+### Categoria:
+- Nome
+- Descrição
+- Imagem
+- Ordem de exibição
+
+### Complemento:
+- Nome
+- Descrição
+- Preço
+- Máximo de seleções
+- Mínimo de seleções
+- Itens do complemento (com preço individual)
+- Obrigatório (toggle)
+
+### Configuração da Loja:
+- Nome da Loja
+- Descrição
+- Logo
+- Imagem de Capa
+- Cores do Tema (primária/secundária)
+- Endereço
+- CNPJ
+- Horário de Funcionamento
+- Dias de Funcionamento
+
+### Métodos de Pagamento:
+- Cartão de Crédito (múltiplas bandeiras)
+- Cartão de Débito (múltiplas bandeiras)
+- PIX
+- Dinheiro
+- Carteira Digital
+
+### Banner:
+- Título
+- Imagem
+- Link
+- Ativo (toggle)
+- Ordem de exibição
+
+### Pedido:
+- Número
+- Cliente
+- Status
+- Itens
+- Total
+- Data
+- Método de Pagamento
+- Endereço de Entrega
+
+## Componentes de UI:
+- Sidebar de navegação fixa
+- Header com informações do admin
+- Cards com gradientes coloridos
+- Botões de ação principais
+- Modais de confirmação
+- Toast notifications para feedback
+- Tabs para organizar conteúdo
+- Upload de imagens com drag-and-drop
+- Pickers de cores 

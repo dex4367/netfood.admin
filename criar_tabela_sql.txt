@@ -1,0 +1,47 @@
+-- Criar tabela configuracao_loja
+CREATE TABLE IF NOT EXISTS configuracao_loja (
+  id text primary key,
+  nome_loja text not null,
+  descricao_loja text,
+  logo_url text,
+  imagem_capa_url text,
+  cor_primaria text,
+  cor_secundaria text,
+  endereco text,
+  cnpj text,
+  horario_funcionamento text,
+  dias_funcionamento text,
+  mostrar_endereco boolean default false,
+  mostrar_cnpj boolean default false,
+  mostrar_horario boolean default false,
+  mostrar_dias boolean default false,
+  pagamento_carteira boolean default false,
+  pagamento_credito_mastercard boolean default false,
+  pagamento_credito_visa boolean default false,
+  pagamento_credito_elo boolean default false,
+  pagamento_credito_amex boolean default false,
+  pagamento_credito_hipercard boolean default false,
+  pagamento_debito_mastercard boolean default false,
+  pagamento_debito_visa boolean default false,
+  pagamento_debito_elo boolean default false,
+  pagamento_pix boolean default false,
+  pagamento_dinheiro boolean default false,
+  created_at timestamp with time zone default now()
+);
+
+-- Inserir configuração padrão se não existir
+INSERT INTO configuracao_loja (
+  id, 
+  nome_loja, 
+  descricao_loja, 
+  cor_primaria, 
+  cor_secundaria
+)
+SELECT 
+  '1', 
+  'NetFood', 
+  'Seu cardápio digital completo', 
+  '#16a34a', 
+  '#15803d'
+WHERE 
+  NOT EXISTS (SELECT 1 FROM configuracao_loja WHERE id = '1'); 

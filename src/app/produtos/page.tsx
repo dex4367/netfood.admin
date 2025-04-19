@@ -59,13 +59,11 @@ export default async function SearchResultsPage({
     <div className="container mx-auto pt-14 pb-24 px-4">
       <Header />
       
-      <div className="max-w-3xl mx-auto mt-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold">
-            {searchQuery 
-              ? `Resultados para "${searchQuery}"`
-              : "Todos os produtos"
-            }
+      {/* Conteúdo principal */}
+      <div className="pt-28 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-[22px] font-bold mb-4">
+            {searchQuery ? `Resultados para "${searchQuery}"` : "Todos os produtos"}
           </h1>
           {produtos.length > 0 && (
             <p className="text-sm text-gray-600 mt-1">
@@ -146,7 +144,7 @@ export default async function SearchResultsPage({
         {/* Termos de pesquisa relacionados */}
         {searchQuery && relatedSearches.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-lg font-semibold mb-3">Pesquisas relacionadas</h2>
+            <h2 className="text-lg font-semibold mb-4">Pesquisas relacionadas</h2>
             <div className="flex flex-wrap gap-2">
               {relatedSearches.map((term, index) => (
                 <Link 

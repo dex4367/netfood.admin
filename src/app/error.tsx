@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import './globals.css'; // Importação explícita do CSS
 
 export default function Error({
   error,

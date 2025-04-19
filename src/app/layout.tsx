@@ -7,7 +7,8 @@ import { initializeDatabase } from "@/lib/init-db";
 import { gerarMetadata } from "./metadata";
 import Image from "next/image";
 import { Providers } from "./providers";
-import Header from "@/components/Header";
+import { Header } from "@/components/Header";
+import { buscarConfiguracaoLoja } from '@/lib/supabase';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,12 +19,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Inicializar banco de dados para garantir que as tabelas existam
-  try {
-    await initializeDatabase();
-  } catch (error) {
-    console.error('Erro ao inicializar banco de dados:', error);
-  }
+  // Inicializar banco de dados na primeira carga
+  initializeDatabase().catch(error => {
+    console.error("Erro ao inicializar banco de dados:", error);
+  });
   
   // Buscar configurações da loja
   let nomeLoja = 'NetFood';
@@ -34,13 +33,8 @@ export default async function RootLayout({
   
   try {
     // Buscar configuração da loja diretamente
-    const { data, error } = await supabase
-      .from('configuracao_loja')
-      .select('*')
-      .limit(1);
-      
-    if (!error && data && data.length > 0) {
-      const configuracao = data[0];
+    const configuracao = await buscarConfiguracaoLoja();
+    if (configuracao) {
       nomeLoja = configuracao.nome_loja;
       descricaoLoja = configuracao.descricao_loja || 'Seu cardápio digital completo';
       corPrimaria = configuracao.cor_primaria || '#16a34a';
@@ -90,64 +84,36 @@ export default async function RootLayout({
               document.addEventListener('DOMContentLoaded', function() {
                 // Função para lidar com o scroll
                 let lastScrollY = window.scrollY;
-                let originalTop = 0;
-                let barraPlaceholder = null;
-                let barraOriginalParent = null;
                 
                 function handleScroll() {
                   const header = document.querySelector('.header-wrapper');
-                  const categoriesBar = document.querySelector('.categories-list-mobile');
+                  const categoryBar = document.querySelector('.category-bar');
                   
-                  if (!header || !categoriesBar) return;
+                  if (!header || !categoryBar) return;
                   
-                  // Na primeira vez, salvar a posição original da barra
-                  if (originalTop === 0) {
-                    const rect = categoriesBar.getBoundingClientRect();
-                    originalTop = rect.top + window.scrollY;
-                    barraOriginalParent = categoriesBar.parentElement;
-                  }
-                  
-                  const headerRect = header.getBoundingClientRect();
                   const currentScrollY = window.scrollY;
+                  const sections = document.querySelectorAll('section');
+                  const headerHeight = header.getBoundingClientRect().height;
                   
-                  // Se a posição de rolagem é maior que a posição original da barra de categorias - altura do cabeçalho
-                  if (currentScrollY > originalTop - headerRect.height) {
-                    // Se a barra ainda não está fixa, fixá-la
-                    if (!categoriesBar.classList.contains('fixed')) {
-                      categoriesBar.classList.add('fixed');
+                  // Quando rolar para baixo, identificar qual seção está visível
+                  if (sections.length > 0) {
+                    for (let i = 0; i < sections.length; i++) {
+                      const section = sections[i];
+                      const sectionTop = section.getBoundingClientRect().top;
                       
-                      // Posicionar corretamente a barra para eliminar espaço entre ela e o cabeçalho
-                      const headerHeight = headerRect.height;
-                      categoriesBar.style.top = headerHeight + 'px';
-                      categoriesBar.style.position = 'fixed';
-                      categoriesBar.style.left = '0';
-                      categoriesBar.style.right = '0';
-                      categoriesBar.style.zIndex = '40';
-                      categoriesBar.style.marginTop = '0';
-                      categoriesBar.style.paddingTop = '0';
-                      categoriesBar.style.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.05)';
-                      
-                      // Criar um espaço reservado para evitar saltos no layout
-                      if (!barraPlaceholder) {
-                        barraPlaceholder = document.createElement('div');
-                        barraPlaceholder.style.height = categoriesBar.offsetHeight + 'px';
-                        barraOriginalParent.insertBefore(barraPlaceholder, categoriesBar.nextSibling);
-                      }
-                    }
-                  } else {
-                    // Se estamos acima da posição original, remover a classe 'fixed'
-                    if (categoriesBar.classList.contains('fixed')) {
-                      categoriesBar.classList.remove('fixed');
-                      categoriesBar.style.position = '';
-                      categoriesBar.style.top = '';
-                      categoriesBar.style.left = '';
-                      categoriesBar.style.right = '';
-                      categoriesBar.style.zIndex = '';
-                      categoriesBar.style.boxShadow = '';
-                      
-                      if (barraPlaceholder) {
-                        barraPlaceholder.remove();
-                        barraPlaceholder = null;
+                      // Se a seção estiver próxima ao topo da tela (considerando a altura do header)
+                      if (sectionTop <= headerHeight + 100) {
+                        // Verificar se a seção tem um id que corresponde a uma categoria
+                        const categoryId = section.getAttribute('data-category-id');
+                        
+                        if (categoryId) {
+                          // Encontrar o botão correspondente e ativá-lo
+                          const categoryBtn = document.querySelector(\`button[data-category-id="\${categoryId}"]\`);
+                          if (categoryBtn) {
+                            // Simular um clique no botão para ativar a categoria
+                            categoryBtn.click();
+                          }
+                        }
                       }
                     }
                   }
