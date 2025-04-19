@@ -41,7 +41,7 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
             >
               <Link href={`/produto/${produto.id}`} className="block h-full">
                 <div className="border border-gray-200/30 rounded-lg overflow-hidden flex flex-col h-full bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
-                  <div className="h-[90px] w-full relative overflow-hidden bg-gray-50">
+                  <div className="h-[110px] w-full relative overflow-hidden bg-gray-50">
                     <Image
                       src={produto.imagem_url || "https://placehold.co/400x300?text=Produto"}
                       alt={produto.nome}
@@ -52,7 +52,7 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
                   
                   <div className="h-[1.5px] bg-orange-500/70 w-full"></div>
                   
-                  <div className="p-1.5 flex flex-col flex-grow h-[60px]">
+                  <div className="p-1.5 flex flex-col flex-grow h-[70px]">
                     <h3 className="text-2xs font-semibold line-clamp-2 text-[#505050]">{produto.nome}</h3>
                     
                     <div className="mt-auto flex flex-col justify-end flex-grow">
