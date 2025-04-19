@@ -33,14 +33,14 @@ export default function GaleriaDestaques({ produtos, titulo = 'Destaques' }: Gal
       <h2 className="text-[18px] font-bold mb-2 text-orange-500">{titulo}</h2>
       
       <div className="embla overflow-hidden" ref={emblaRef}>
-        <div className="embla__container flex" style={{ paddingRight: '40px' }}>
+        <div className="embla__container flex pb-2" style={{ paddingRight: '40px' }}>
           {produtos.map((produto, index) => (
             <div 
               className={`embla__slide relative flex-[0_0_140px] min-w-0 ${index !== 0 ? 'ml-1.5' : ''}`}
               key={produto.id}
             >
-              <Link href={`/produto/${produto.id}`}>
-                <div className="border border-gray-200/30 rounded-lg overflow-hidden flex flex-col h-full bg-white shadow-sm">
+              <Link href={`/produto/${produto.id}`} className="block h-full">
+                <div className="border border-gray-200/30 rounded-lg overflow-hidden flex flex-col h-full bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
                   <div className="h-[90px] w-full relative overflow-hidden bg-gray-50">
                     <Image
                       src={produto.imagem_url || "https://placehold.co/400x300?text=Produto"}
