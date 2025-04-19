@@ -30,20 +30,11 @@ export default async function ProdutoLayout({
   }
   
   return (
-    <html lang="pt-BR">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-      </head>
-      <body className={`${inter.className} min-h-screen bg-white`}>
-        <Providers>
-          {/* O cabeçalho será gerenciado por cada página */}
-          <main className="container mx-auto px-0 sm:px-4 py-0 max-w-md">
-            {children}
-          </main>
-          
-          {/* Rodapé removido intencionalmente para página de produto */}
-        </Providers>
-      </body>
-    </html>
+    <>
+      {/* Conteúdo da página de produto */}
+      <div className="produto-container">
+        {children}
+      </div>
+    </>
   );
 } 
