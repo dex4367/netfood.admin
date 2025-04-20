@@ -45,8 +45,7 @@ export default function Home() {
         const produtos = await buscarProdutos().catch(() => []);
         setProdutosData(produtos || []);
         
-        // Buscar 3 produtos em destaque em vez do padrão
-        const destaques = await buscarProdutosDestaque(3).catch(() => []);
+        const destaques = await buscarProdutosDestaque().catch(() => []);
         setDestaquesData(destaques || []);
   
         // Buscar banners
@@ -364,7 +363,7 @@ export default function Home() {
         {categoriasData && categoriaAtiva !== undefined && (
           <Header 
             configLoja={configLoja}
-            categorias={categoriasData}
+            categorias={[]}
             categoriaAtiva={categoriaAtiva}
             setCategoriaAtiva={mudarCategoriaAtiva}
           />
@@ -450,6 +449,16 @@ export default function Home() {
       {/* Conteúdo principal */}
       <div className="px-4 py-4 bg-white min-h-screen">
         <div className="max-w-3xl mx-auto space-y-6">
+          {/* Barra de Categorias Horizontal */}
+          <div className="mb-3 mt-1 -mx-4 sticky top-[48px] z-10 category-bar">
+            <CategoriaListHorizontal
+              categorias={categoriasData}
+              categoriaAtiva={categoriaAtiva.toString()}
+              setCategoriaAtiva={(id) => setCategoriaAtiva(parseInt(id))}
+              className="shadow-sm"
+            />
+          </div>
+
           {/* Banners Carousel (Reativado) */}
           {bannersFormatados.length > 0 && (
             <div className="rounded-xl overflow-hidden shadow-sm">
@@ -473,6 +482,7 @@ export default function Home() {
                   key={categoria.id} 
                   className="mb-8"
                   id={`section-${categoria.id}`} // Adicionar ID para scroll
+                  data-category-id={categoria.id} // Adicionar data attribute para referência
                 >
                   <h2 className="text-[22px] font-bold text-orange-500 mb-4">{categoria.nome}</h2>
                   <ProdutoGridCompacto produtos={produtos} />
